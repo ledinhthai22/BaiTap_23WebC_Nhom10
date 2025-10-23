@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BaiTap_23WebC_Nhom10.Models;
-namespace BaiTap_03_23WebC_Nhom10.Views.Shared.Components;
+
 
 public class SingleShopProduct : ViewComponent
 {
@@ -8,7 +8,7 @@ public class SingleShopProduct : ViewComponent
     public SingleShopProduct(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri("https://localhost:7021/");
+        _httpClient.BaseAddress = new Uri("http://localhost:5021/");
     }
 
     public async Task<IViewComponentResult> InvokeAsync()

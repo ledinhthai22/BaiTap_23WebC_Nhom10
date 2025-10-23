@@ -10,7 +10,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRelated
         public ProductRelated(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7021/"); // API base URL
+            _httpClient.BaseAddress = new Uri("http://localhost:5021/"); // API base URL
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int? id = null)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-//using BaiTap_23WebC_Nhom10.Filters;//Bổ sung thêm namspace để dùng filter áa
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
     [Area("Admin")]
