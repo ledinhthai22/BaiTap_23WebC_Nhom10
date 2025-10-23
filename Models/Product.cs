@@ -33,7 +33,7 @@ namespace BaiTap_23WebC_Nhom10.Models
 
         [Range(0, int.MaxValue)]
         [Column("QUANLITY")]
-        public int? quality { get; set; }
+        public int? quanlity { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn danh mục")]
         [Column("CATEGORY_ID")]
@@ -57,12 +57,6 @@ namespace BaiTap_23WebC_Nhom10.Models
 
         [Column("UPDATE_AT")]
         public DateTime? updateAT { get; set; }
-
-      
-
-        
         public Category ? category { get; set; }
-        [NotMapped]
-        public List<string>? imageList { get; set; }
     }
 }

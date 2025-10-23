@@ -1,4 +1,5 @@
 ﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
+@using System.Globalization
 @{
     Layout = "_Layout";
 }
@@ -6,7 +7,14 @@
 @section Title {
         Danh sách sản phẩm
 }
-
+@* @if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+} *@
 <div class="row mb-3 align-items-center">
     <div class="col-md-6 text-end">
         <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn btn-success">
@@ -40,7 +48,7 @@ else
                 <tr>
                     <td>@p.id</td>
                     <td>@p.productName</td>
-                    <td>@p.price.ToString("N0") đ</td>
+                    <td>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", p.price)</td>
                     <td>@p.discount %</td>
                     <td>@p.category?.categoryName</td>
                     <td>

@@ -13,7 +13,6 @@ namespace BaiTap_23WebC_Nhom10
             var conStr = builder.Configuration.GetConnectionString("DefaultConnect");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-
                 options.UseSqlServer(conStr);
             }); //Ket Noi EF Core o day ... 
             var app = builder.Build();

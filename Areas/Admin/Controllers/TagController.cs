@@ -3,6 +3,7 @@ using BaiTap_23WebC_Nhom10.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
@@ -23,6 +24,19 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
                .OrderByDescending(t => t.id)
                .ToList();
             return View(tag);
+        }
+        [HttpGet("Goi-y-the")]
+        public IActionResult Suggestion(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+                return Json(new List<string>());
+
+            var suggestions = _dbContext.Tags
+                .Where(t => t.tagName.Contains(keyword))
+                .Select(t => t.tagName)
+                .ToList();
+
+            return Json(suggestions);
         }
         [HttpGet("them-tag")]
         public IActionResult Create()
