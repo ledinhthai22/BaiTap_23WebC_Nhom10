@@ -32,7 +32,7 @@ namespace BaiTap_23WebC_Nhom10.Models
         public string? description { get; set; }
 
         [Range(0, int.MaxValue)]
-        [Column("QUALITY")]
+        [Column("QUANLITY")]
         public int? quality { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn danh mục")]

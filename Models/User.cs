@@ -36,7 +36,7 @@ namespace BaiTap_23WebC_Nhom10.Models
         
         public string? email { get; set; }
         
-        [Column("Phone")]
+        [Column("PHONE")]
         [StringLength(32)]
         public string? phone { get; set; }
 
