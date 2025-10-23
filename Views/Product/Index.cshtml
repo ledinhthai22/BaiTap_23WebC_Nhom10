@@ -1,0 +1,87 @@
+﻿@using System.Globalization;
+@using BaiTap_23WebC_Nhom10.Models;
+@model List<Product>
+
+@section title {
+     Shop - eElectronics - HTML eCommerce Template
+}
+
+@section css {
+}   
+@section js {
+    <script>
+        $(document).ready(function () {
+            const pageSize = 8; 
+            let currentPage = 1;
+
+            const $products = $(".product-item");
+            const totalProducts = $products.length;
+            const totalPages = Math.ceil(totalProducts / pageSize);
+
+            function renderPage() {
+                $products.hide();
+                const start = (currentPage - 1) * pageSize;
+                const end = start + pageSize;
+                $products.slice(start, end).fadeIn();
+                renderPagination();
+                $("html, body").animate({ scrollTop: 0 }, "fast");
+            }
+
+            function renderPagination() {
+                let html = "";
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `
+                        <li class="page-item ${i === currentPage ? "active" : ""}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>`;
+                }
+                $(".pagination").html(html);
+            }
+
+            $(document).on("click", ".pagination a", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                if (page && page !== currentPage) {
+                    currentPage = page;
+                    renderPage();
+                }
+            });
+            renderPage();
+        });
+    </script>
+}
+
+
+@section subtitle {
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Shopping</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row ">
+            @await Component.InvokeAsync("SingleShopProduct")
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-pagination text-center">
+                    <nav>
+                        <ul class="pagination">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

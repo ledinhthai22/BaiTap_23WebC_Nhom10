@@ -1,0 +1,31 @@
+﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
+
+<div class="single-sidebar">
+    <h2 class="sidebar-title">Products</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model.Take(5)) 
+        {
+            <div class="thubmnail-recent mb-3">
+                <a href="#">
+                    <img src="~/img/@item.image" alt="@item.productName" class="recent-thumb" style="width:100px;height:100px;object-fit:cover;">
+                </a>
+                <h2>
+                    <a href="#">@item.productName</a>
+                </h2>
+                <div class="product-sidebar-price">
+                    <ins>@item.price.ToString("C0")</ins>
+                    @if (item.discount > 0)
+                    {
+                        <del>@((item.price / (1 - item.discount / 100)).ToString("C0"))</del>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Không có sản phẩm nào.</p>
+    }
+</div>

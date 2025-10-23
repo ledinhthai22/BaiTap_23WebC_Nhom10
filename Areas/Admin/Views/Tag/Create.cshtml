@@ -1,0 +1,28 @@
+﻿@model BaiTap_23WebC_Nhom10.Models.Tag
+@{
+    Layout = "_Layout";
+}
+@section Title {
+        Thêm thẻ
+}
+
+<div class="card-body">
+    <form asp-area="Admin" asp-controller="Tag" asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="tagName" class="form-label fw-bold">Tên thẻ</label>
+                <input asp-for="tagName" class="form-control" placeholder="Nhập tên thẻ" required />
+                <span asp-validation-for="tagName" class="text-danger"></span>
+                <br />
+                <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-save"></i> Lưu thẻ
+                    </button>
+                    <a asp-controller="Tag" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,13 @@
+﻿
+
+<div class="single-sidebar">
+    <h2 class="sidebar-title">Recent Posts</h2>
+    <ul>
+        @foreach (var p in Model)
+        {
+            <li>
+                <a href="/Product/Details/@p.id">@p.productName</a>
+            </li>
+        }
+    </ul>
+</div>

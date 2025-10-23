@@ -1,0 +1,43 @@
+﻿#previewWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.image-container {
+    position: relative;
+    width: 150px; /* tăng hoặc giảm tùy bạn */
+    height: 150px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    flex-shrink: 0; /* giữ kích thước cố định */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .image-container input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .image-container .btn-danger {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 10;
+    }
+

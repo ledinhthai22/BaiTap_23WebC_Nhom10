@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="sidebar-search">
+                <div class="input-group custom-search-form">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+                <!-- /input-group -->
+            </li>
+            <li>
+                <a asp-area="admin" asp-action="index" asp-controller="home"><i class="fa fa-dashboard fa-fw"></i> Trang chủ</a>
+            </li>
+            <li>
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index"><i class="fa fa-table fa-fw"></i>Quản lý sản phẩm</a>
+            </li>
+            <li>
+                <a asp-area="Admin" asp-controller="Category" asp-action="Index"><i class="fa fa-table fa-fw"></i>Quản lý danh mục</a>
+            </li>
+             <li>
+                <a asp-area="Admin" asp-controller="Tag" asp-action="Index"><i class="fa fa-table fa-fw"></i>Quản lý thẻ</a>
+            </li>
+
+           
+        </ul>
+    </div>
+    <!-- /.sidebar-collapse -->
+</div>

@@ -1,0 +1,59 @@
+﻿@section title {
+    Checkout - eElectronics - HTML eCommerce Template
+}
+@section css {}
+@section js {}
+@section subtitle {
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Checkout</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="single-sidebar">
+					@await Html.PartialAsync("~/Views/Shared/Partials/User/Product/_Search.cshtml")
+                </div>
+
+                <div class="single-sidebar">
+					@await Html.PartialAsync("~/Views/Shared/Partials/User/Product/_List-Product.cshtml")
+                </div>
+
+                <div class="single-sidebar">
+					@await Html.PartialAsync("~/Views/Shared/Partials/User/Product/_Recent-Posts.cshtml")
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+						@await Html.PartialAsync("~/Views/Shared/Partials/User/Checkout/_Return-Customer.cshtml")
+
+						@await Html.PartialAsync("~/Views/Shared/Partials/User/Checkout/_Add-Coupon.cshtml")          
+                        <form enctype="multipart/form-data" action="#" class="checkout" method="post" name="checkout">
+
+                            <div id="customer_details" class="col2-set">
+                                <div class="col-1">
+									@await Html.PartialAsync("~/Views/Shared/Partials/User/Checkout/_Billing-Detail.cshtml")
+                                </div>
+                                <div class="col-2">
+									@await Html.PartialAsync("~/Views/Shared/Partials/User/Checkout/_Ship.cshtml")
+                                </div>
+                            </div>
+							@await Html.PartialAsync("~/Views/Shared/Partials/User/Checkout/_Order-Review.cshtml")
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

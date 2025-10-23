@@ -1,0 +1,169 @@
+﻿@{
+    Layout = "_Layout";
+}
+@section Title {
+        Thêm sản phẩm
+}
+
+<div class="container mt-4 mb-5">
+    <div class="card shadow-sm p-4">
+        <form id="uploadForm" asp-controller="Home" asp-action="UploadImages" method="post" enctype="multipart/form-data">
+            <div class="row g-3">
+                <!-- Cột trái -->
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Tên sản phẩm</label>
+                    <input type="text" id="PRODUCT_NAME" class="form-control" placeholder="Nhập tên sản phẩm" required>
+
+                    <label class="form-label fw-bold mt-3">Giá</label>
+                    <input type="number" id="PRICE" class="form-control" placeholder="Nhập giá sản phẩm" required>
+
+                    <label class="form-label fw-bold mt-3">Số lượng</label>
+                    <input type="number" id="QUALITY" class="form-control" placeholder="Nhập Số Lượng " required>
+
+                    <label class="form-label fw-bold mt-3">Mô tả</label>
+                    <textarea id="DESCRIPTION" rows="3" class="form-control" placeholder="Nhập mô tả sản phẩm " style="height:368px" required></textarea>
+                    <br />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Giảm giá (%)</label>
+                    <input type="number" id="DISCOUNT" class="form-control" placeholder="Nhập giảm giá" required>
+                    <label class="form-label fw-bold mt-3">Tag</label>
+                    <input type="text" id="TAG_ID" class="form-control" placeholder="Nhập 1 thẻ">
+                    <label class="form-label fw-bold mt-3">Danh mục</label>
+                        <select id="CATEGORY_ID" class="form-select me-2">
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                       <br />
+                    <div class="d-flex align-items-center mb-3" id="newCategoryContainer">
+                        <input type="text" id="newCategoryName" class="form-control me-2 " placeholder="Nhập tên danh mục">
+                        <br />
+                    </div>
+                 </div>
+
+                    
+
+                    <!-- Nút thêm ảnh (bên phải) -->
+
+                <!-- Submit -->
+                <div class="col-12 text-center">
+                    <button type="button" class="btn btn-success" id="btnSaveCategory">Thêm danh mục</button>
+                    <button type="button" id="btnAdd" class="btn btn-outline-success mt-3 w-100">
+                        + Thêm ảnh
+                    </button>
+                    <br />
+                    <br />
+                </div>
+
+
+
+                <div id="previewWrapper" class="d-flex flex-wrap justify-content-start gap-3"></div>
+                <input type="hidden" id="totalFiles" name="totalFiles" value="0" />
+                <br />
+                
+                
+            </div>
+            <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-5">Lưu sản phẩm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section js {
+    <script>
+        let counter = 0;
+        const MAX_IMAGES = 5;
+        const previewWrapper = document.getElementById("previewWrapper");
+        const btnAdd = document.getElementById("btnAdd");
+        const uploadForm = document.getElementById("uploadForm");
+
+        // Hàm cập nhật lại counter khi xóa ảnh
+        function updateCounter() {
+            if (previewWrapper.children.length === 0) {
+                counter = 0; // Reset lại khi không còn ảnh nào
+            }
+        }
+
+        btnAdd.addEventListener("click", () => {
+            if (previewWrapper.children.length >= MAX_IMAGES) {
+                alert(`Bạn chỉ được upload tối đa ${MAX_IMAGES} ảnh!`);
+                return;
+            }
+
+            // Tăng biến đếm mỗi khi thêm ảnh
+            counter++;
+
+            const container = document.createElement("div");
+            container.classList.add("image-container", "position-relative");
+            container.id = counter === 1
+                ? `img-Container-${counter}-Anh-Chinh-Cua-San-Pham`
+                : `img-Container-${counter}-Anh-Phu-Cua-San-Pham`;
+
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.name = "images";
+            input.classList.add("form-control");
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "×";
+            removeBtn.classList.add("btn", "btn-danger", "btn-sm");
+            removeBtn.style.position = "absolute";
+            removeBtn.style.top = "2px";
+            removeBtn.style.right = "2px";
+            removeBtn.style.zIndex = "10";
+
+            // Khi chọn ảnh -> hiển thị preview
+            input.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        container.querySelector("img")?.remove();
+                        const img = document.createElement("img");
+                        img.src = ev.target.result;
+                        img.style.width = "120px";
+                        img.style.height = "120px";
+                        img.style.objectFit = "cover";
+                        img.style.borderRadius = "8px";
+                        img.style.border = "1px solid #ccc";
+                        container.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Khi xóa ảnh
+            removeBtn.addEventListener("click", () => {
+                container.remove();
+                updateCounter();
+            });
+
+            container.appendChild(input);
+            container.appendChild(removeBtn);
+            previewWrapper.appendChild(container);
+        });
+
+        uploadForm.addEventListener("submit", () => {
+            document.getElementById("totalFiles").value = previewWrapper.children.length;
+        });
+
+        // Thêm danh mục
+        $('#btnSaveCategory').click(() => {
+            const name = $('#newCategoryName').val().trim();
+            if (!name) return alert('Vui lòng nhập tên danh mục!');
+            $.ajax({
+                url: '/api/categories',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ categoryName: name, status: true }),
+                success: cat => {
+                    $('#CATEGORY_ID').append(`<option value="${cat.id}" selected>${name}</option>`);
+                    $('#newCategoryName').val('');
+                    $('#newCategoryContainer').hide();
+                }
+            });
+        });
+    </script>
+}
+

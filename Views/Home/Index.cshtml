@@ -1,0 +1,348 @@
+﻿@using System.Globalization;
+@using Microsoft.AspNetCore.Html;
+@using System.Text;
+@using BaiTap_23WebC_Nhom10.Models;
+@{
+    ViewBag.PageName = "Home";
+    var culture = new CultureInfo("vi-VN");
+}
+
+@section title {
+        eElectronics - HTML eCommerce Template
+}
+@section css {
+
+}
+
+@section js {
+    <script>
+        $(document).ready(function () {
+            if (typeof jQuery == 'undefined') {
+                return;
+            }
+
+            const formatCurrency = (amount) => {
+                const formatter = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                    minimumFractionDigits: 0
+                });
+                return formatter.format(amount).replace("₫", "VNĐ");
+            }
+
+            const latestProduct = (p) => {
+                const priceValue = parseFloat(p.price) || 0;
+                const discountValue = parseFloat(p.discount) || 0;
+
+                let finalPrice = priceValue * (1 - discountValue);
+                let price = '';
+                let finalPriceFormatted = formatCurrency(finalPrice);
+                let priceFormatted = formatCurrency(priceValue);
+
+                if (discountValue > 0) {
+                    price = `<ins>${finalPriceFormatted}</ins><del>${priceFormatted}</del>`;
+                } else {
+                    price = `<ins>${priceFormatted}</ins>`;
+                }
+
+                // Tách chuỗi image và lấy ảnh đầu tiên
+                let mainImage = "/img/no-image.jpg";
+                if (typeof p.image === "string" && p.image.trim() !== "") {
+                    const images = p.image.split(";").map(x => x.trim());
+                    mainImage = images.length > 0 ? `/img/${images[0]}` : mainImage;
+                }
+
+                return `
+                    <div class="single-product">
+                        <div class="product-f-image" style="height: 270px; overflow: hidden; display: block;">
+                            <img src="${mainImage}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="product-hover">
+                                <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
+                                <a href="/product/detail/${p.id}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
+                            </div>
+                        </div>
+                        <h2><a href="/product/detail/${p.id}">${p.productName}</a></h2>
+                        <div class="product-carousel-price">
+                            ${price}
+                        </div>
+                    </div>
+                `;
+            };
+
+            const widgetProduct = (p) => {
+                const priceValue = parseFloat(p.price) || 0;
+                const discountValue = parseFloat(p.discount) || 0;
+
+                let finalPrice = priceValue * (1 - discountValue);
+                let price = '';
+                let finalPriceFormatted = formatCurrency(finalPrice);
+                let priceFormatted = formatCurrency(priceValue);
+
+                if (discountValue > 0) {
+                    price = `<ins>${finalPriceFormatted}</ins><del>${priceFormatted}</del>`;
+                } else {
+                    price = `<ins>${priceFormatted}</ins>`;
+                }
+
+                // Tách chuỗi image và lấy ảnh đầu tiên
+                let mainImage = "/img/no-image.jpg";
+                if (typeof p.image === "string" && p.image.trim() !== "") {
+                    const images = p.image.split(";").map(x => x.trim());
+                    mainImage = images.length > 0 ? `/img/${images[0]}` : mainImage;
+                }
+
+                return `
+                    <div class="single-wid-product">
+                        <a href="/product/detail/${p.id}"><img src="${mainImage}" alt="" class="product-thumb"></a>
+                        <h2><a href="/product/detail/${p.id}">${p.productName}</a></h2>
+                        <div class="product-wid-rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                        <div class="product-wid-price">
+                            ${price}
+                        </div>
+                    </div>
+                `;
+            };
+
+            $.ajax({
+                url: '@Url.Content("~/api/products")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (products) {
+                    if (products && products.length > 0) {
+                        let latestProductsHtml = '';
+                        let topSellersHtml = '';
+                        let recentlyViewedHtml = '';
+                        let topNewHtml = '';
+
+                        products.forEach(p => {
+                            latestProductsHtml += latestProduct(p);
+                        });
+
+                        $('.product-carousel').html(latestProductsHtml);
+                        $('.product-carousel').trigger('destroy.owl.carousel');
+                        $('.product-carousel').owlCarousel({
+                            loop: true,
+                            nav: true,
+                            margin: 20,
+                            responsiveClass: true,
+                            responsive: {
+                                0: {
+                                    items: 1,
+                                    nav: true
+                                },
+                                600: {
+                                    items: 3,
+                                    nav: false
+                                },
+                                1000: {
+                                    items: 4,
+                                    nav: true,
+                                    loop: false
+                                }
+                            }
+                        });
+                        products.slice(0, 3).forEach(p => { topSellersHtml += widgetProduct(p); });
+                        $('.product-widget-area .col-md-4:nth-child(1) .single-product-widget').append(topSellersHtml);
+
+                        products.slice(0, 3).forEach(p => { recentlyViewedHtml += widgetProduct(p); });
+                        $('.product-widget-area .col-md-4:nth-child(2) .single-product-widget').append(recentlyViewedHtml);
+
+                        products.slice(0, 3).forEach(p => { topNewHtml += widgetProduct(p); });
+                        $('.product-widget-area .col-md-4:nth-child(3) .single-product-widget').append(topNewHtml);
+                    } else {
+                        $('.maincontent-area').html('<div class="container"><div class="row"><div class="col-md-12"><h2 class="section-title">Không tìm thấy sản phẩm nào.</h2></div></div></div>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("LỖI KHI TẢI SẢN PHẨM:", status, error);
+                }
+            });
+        });
+    </script>
+}
+<div class="slider-area">
+    <div class="zigzag-bottom"></div>
+    <div id="slide-list" class="carousel carousel-fade slide" data-ride="carousel" data-interval="3000">
+
+        <div class="slide-bulletz">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ol class="carousel-indicators slide-indicators">
+                            <li data-target="#slide-list" data-slide-to="0" class="active"></li>
+                            <li data-target="#slide-list" data-slide-to="1"></li>
+                            <li data-target="#slide-list" data-slide-to="2"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel-inner" role="listbox">
+            <div class="item active">
+                <div class="single-slide">
+                    <div class="slide-bg slide-one"><img src="~/img/slide-1.jpg" /> </div>
+                    <div class="slide-text-wrapper">
+                        <div class="slide-text">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-6">
+                                        <div class="slide-content">
+                                            <h2>We are awesome</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur, dolorem, excepturi. Dolore aliquam quibusdam ut quae iure vero exercitationem ratione!</p>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi ab molestiae minus reiciendis! Pariatur ab rerum, sapiente ex nostrum laudantium.</p>
+                                            <a href="" class="readmore">Learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="single-slide">
+                    <div class="slide-bg slide-two"><img src="~/img/slide-2.jpg" /></div>
+                    <div class="slide-text-wrapper">
+                        <div class="slide-text">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-6">
+                                        <div class="slide-content">
+                                            <h2>We are great</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aspernatur, dolorum harum molestias tempora deserunt voluptas possimus quos eveniet, vitae voluptatem accusantium atque deleniti inventore. Enim quam placeat expedita! Quibusdam!</p>
+                                            <a href="" class="readmore">Learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="single-slide">
+                    <div class="slide-bg slide-three"><img src="~/img/slide-3.jpg" /></div>
+                    <div class="slide-text-wrapper">
+                        <div class="slide-text">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-6">
+                                        <div class="slide-content">
+                                            <h2>We are superb</h2>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, eius?</p>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti voluptates necessitatibus dicta recusandae quae amet nobis sapiente explicabo voluptatibus rerum nihil quas saepe, tempore error odio quam obcaecati suscipit sequi.</p>
+                                            <a href="" class="readmore">Learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="promo-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="single-promo">
+                    <i class="fa fa-refresh"></i>
+                    <p>30 Days return</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-promo">
+                    <i class="fa fa-truck"></i>
+                    <p>Free shipping</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-promo">
+                    <i class="fa fa-lock"></i>
+                    <p>Secure payments</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="single-promo">
+                    <i class="fa fa-gift"></i>
+                    <p>New products</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="maincontent-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="latest-product">
+                    <h2 class="section-title">Latest Products</h2>
+                    <div class="product-carousel">
+                        @* Chèn data latest products vào đây *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="brands-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="brand-wrapper">
+                    <h2 class="section-title">Brands</h2>
+                    <div class="brand-list">
+                        <img src="img/services_logo__1.jpg" alt="">
+                        <img src="img/services_logo__2.jpg" alt="">
+                        <img src="img/services_logo__3.jpg" alt="">
+                        <img src="img/services_logo__4.jpg" alt="">
+                        <img src="img/services_logo__5.jpg" alt="">
+                        <img src="img/services_logo__6.jpg" alt="">
+                        <img src="img/services_logo__7.jpg" alt="">
+                        <img src="img/services_logo__8.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="product-widget-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="single-product-widget">
+                    <h2 class="product-wid-title">Top Sellers</h2>
+                    <a href="#" class="wid-view-more">View All</a>
+                    @* Chèn data topSellers vào đây *@
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="single-product-widget">
+                    <h2 class="product-wid-title">Recently Viewed</h2>
+                    <a href="#" class="wid-view-more">View All</a>
+                    @* Chèn data recentView vào đây *@
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="single-product-widget">
+                    <h2 class="product-wid-title">Top New</h2>
+                    <a href="#" class="wid-view-more">View All</a>
+                    @* Chèn data topNew vào đây *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+﻿@using System.Text.Json
+@section title {
+        Product - eElectronics - HTML eCommerce Template
+}
+@section css {
+}
+@section subtitle {
+    <div class="product-big-title-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-bit-title text-center">
+                        <h2>Product</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="single-sidebar">
+                    <h2 class="sidebar-title">Search Products</h2>
+                    <form action="">
+                        <input type="text" placeholder="Search products...">
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
+                <div class="single-sidebar">
+                    @await Component.InvokeAsync("ProductSidebar")
+                </div>
+                <div class="single-sidebar">
+                    @await Component.InvokeAsync("ProductRecentPost")
+                </div>
+            </div>
+
+            <div class="col-md-8" id="product-detail-container">
+                <div class="product-content-right">
+                    <div class="product-breadcroumb" id="detail-breadcrumb">
+                        <span id="breadcrumb-home-placeholder"></span>
+                        <span id="breadcrumb-category-placeholder"></span>
+                        <span id="breadcrumb-product-name-placeholder"></span>
+                    </div>
+
+                    <div id="single-product-content">
+                        
+                    </div>
+                    @await Component.InvokeAsync("ProductRelated")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,41 @@
+﻿@* @using System.Globalization; *@
+@* @using BaiTap_03_23WebC_Nhom10.Service; *@
+@* @using BaiTap_03_23WebC_Nhom10.Models; *@
+@* @{ *@
+    
+@*     var products = Context.Items["products"] as List<Product> ?? new List<Product>(); *@
+@*     var culture = new CultureInfo("vi-VN"); *@
+@* } *@
+
+@* <div class="related-products-wrapper"> *@
+@*     <h2 class="related-products-title">You may be interested in...</h2> *@
+@*     <div class="related-products-carousel"> *@
+@*         @foreach (var p in products.Skip(1).Take(2)) *@
+@*         { *@
+           
+@*             var finalPrice = p.DonGia * (1 - p.DonGiaKhuyenMai); *@
+
+@*             <div class="single-product"> *@
+@*                 <div class="product-f-image"> *@
+@*                     <a href="#"> *@
+@*                         <img width="145" height="145" alt="@p.TenSp" class="shop_thumbnail" src="~/img/@p.HinhAnh" /> *@
+@*                         <h3>Ship Your Idea</h3>  *@
+@*                     </a> *@
+@*                 </div> *@
+@*                 <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="22" rel="nofollow" href="#">Select options</a> *@
+
+@*                 <div class="product-carousel-price"> *@
+@*                     @if (p.DonGiaKhuyenMai > 0) *@
+@*                     { *@
+@*                         <ins>@finalPrice.ToString("N0", culture) VNĐ</ins> *@
+@*                         <del>@p.DonGia.ToString("N0", culture) VNĐ</del> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         <span class="price"><span class="amount">@p.DonGia.ToString("N0", culture) VNĐ</span></span> *@
+@*                     } *@
+@*                 </div> *@
+@*             </div> *@
+@*         } *@
+@*     </div> *@
+@* </div> *@

@@ -1,0 +1,28 @@
+﻿@model BaiTap_23WebC_Nhom10.Models.Category
+@{
+    Layout = "_Layout";
+}
+@section Title {
+            Thêm danh mục
+}
+
+<div class="card-body">
+    <form asp-area="Admin" asp-controller="Category" asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-12">
+                <label asp-for="categoryName" class="form-label fw-bold">Tên danh mục</label>
+                <input asp-for="categoryName" class="form-control" placeholder="Nhập tên danh mục" required />
+                <span asp-validation-for="categoryName" class="text-danger"></span>
+                <br />
+                <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-save"></i> Lưu thẻ
+                    </button>
+                    <a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
