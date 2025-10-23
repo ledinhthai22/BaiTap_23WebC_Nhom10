@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BaiTap_23WebC_Nhom10.Models;
-namespace BaiTap_03_23WebC_Nhom10.Views.Shared.Components;
+
 
 public class SingleShopProduct : ViewComponent
 {
