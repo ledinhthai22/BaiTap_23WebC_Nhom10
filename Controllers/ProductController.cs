@@ -1,5 +1,4 @@
-﻿using BaiTap_03_23WebC_Nhom10
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 //using BaiTap_23WebC_Nhom10.Filters;//Bổ sung thêm namspace để dùng filter áa
 //using PagedList;
 
