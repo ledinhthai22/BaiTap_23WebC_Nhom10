@@ -9,7 +9,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductSidebar
         public ProductSidebar(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7214/"); // URL gốc của API
+            _httpClient.BaseAddress = new Uri("https://localhost:7214/");
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
