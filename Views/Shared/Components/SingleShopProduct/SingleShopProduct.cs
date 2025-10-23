@@ -8,7 +8,7 @@ public class SingleShopProduct : ViewComponent
     public SingleShopProduct(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri("https://localhost:7214/");
+        _httpClient.BaseAddress = new Uri("http://localhost:5021/");
     }
 
     public async Task<IViewComponentResult> InvokeAsync()
