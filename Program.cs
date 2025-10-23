@@ -15,7 +15,7 @@ namespace BaiTap_23WebC_Nhom10
             {
 
                 options.UseSqlServer(conStr);
-            });
+            }); //Ket Noi EF Core o day
             var app = builder.Build();
             if (!app.Environment.IsDevelopment())
             {
