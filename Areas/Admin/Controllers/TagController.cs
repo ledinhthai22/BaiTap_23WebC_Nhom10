@@ -1,5 +1,4 @@
-﻿//using BaiTap_23WebC_Nhom10.Filters;
-using BaiTap_23WebC_Nhom10.Data;
+﻿using BaiTap_23WebC_Nhom10.Data;
 using BaiTap_23WebC_Nhom10.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
