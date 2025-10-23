@@ -7,44 +7,47 @@
 
 <div class="container mt-4 mb-5">
     <div class="card shadow-sm p-4">
-        <form id="uploadForm" asp-controller="Home" asp-action="UploadImages" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" asp-area="Admin" asp-controller="Products" asp-action="Create" method="post" enctype="multipart/form-data">
+
+            @Html.AntiForgeryToken()
+
             <div class="row g-3">
-                <!-- Cột trái -->
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Tên sản phẩm</label>
-                    <input type="text" id="PRODUCT_NAME" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                    <input type="text" id="PRODUCT_NAME" name="PRODUCT_NAME" class="form-control" placeholder="Nhập tên sản phẩm" required>
 
                     <label class="form-label fw-bold mt-3">Giá</label>
-                    <input type="number" id="PRICE" class="form-control" placeholder="Nhập giá sản phẩm" required>
+                    <input type="number" id="PRICE" name="PRICE" class="form-control" placeholder="Nhập giá sản phẩm" required>
 
                     <label class="form-label fw-bold mt-3">Số lượng</label>
-                    <input type="number" id="QUALITY" class="form-control" placeholder="Nhập Số Lượng " required>
+                    <input type="number" id="QUANLITY" name="QUANLITY" class="form-control" placeholder="Nhập Số Lượng " required>
 
                     <label class="form-label fw-bold mt-3">Mô tả</label>
-                    <textarea id="DESCRIPTION" rows="3" class="form-control" placeholder="Nhập mô tả sản phẩm " style="height:368px" required></textarea>
+                    <textarea id="DESCRIPTION" name="DESCRIPTION" rows="3" class="form-control" placeholder="Nhập mô tả sản phẩm " style="height:368px" required></textarea>
                     <br />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Giảm giá (%)</label>
-                    <input type="number" id="DISCOUNT" class="form-control" placeholder="Nhập giảm giá" required>
+                    <input type="number" id="DISCOUNT" name="DISCOUNT" class="form-control" placeholder="Nhập giảm giá" required>
+
                     <label class="form-label fw-bold mt-3">Tag</label>
-                    <input type="text" id="TAG_ID" class="form-control" placeholder="Nhập 1 thẻ">
+                    <input type="text" id="TAG_ID" name="TAG_ID" class="form-control" placeholder="Nhập 1 thẻ">
+                    <br />
                     <label class="form-label fw-bold mt-3">Danh mục</label>
-                        <select id="CATEGORY_ID" class="form-select me-2">
-                            <option value="">-- Chọn danh mục --</option>
-                        </select>
-                       <br />
-                    <div class="d-flex align-items-center mb-3" id="newCategoryContainer">
+                    <select id="CATEGORY_ID" name="CATEGORY_ID" class="form-select me-2" style="border-radius:10px; height:30px; margin-bottom:20px" required>
+                        <option value="">-- Chọn danh mục --</option>
+                        @foreach (var c in ViewBag.Categories)
+                        {
+                            <option value="@c.id">@c.categoryName</option>
+                        }
+                    </select>
+
+                    <div class="d-flex align-items-center mb-4" id="newCategoryContainer">
                         <input type="text" id="newCategoryName" class="form-control me-2 " placeholder="Nhập tên danh mục">
                         <br />
                     </div>
-                 </div>
+                </div>
 
-                    
-
-                    <!-- Nút thêm ảnh (bên phải) -->
-
-                <!-- Submit -->
                 <div class="col-12 text-center">
                     <button type="button" class="btn btn-success" id="btnSaveCategory">Thêm danh mục</button>
                     <button type="button" id="btnAdd" class="btn btn-outline-success mt-3 w-100">
@@ -54,16 +57,12 @@
                     <br />
                 </div>
 
-
-
                 <div id="previewWrapper" class="d-flex flex-wrap justify-content-start gap-3"></div>
                 <input type="hidden" id="totalFiles" name="totalFiles" value="0" />
                 <br />
-                
-                
             </div>
             <div class="text-center">
-                    <button type="submit" class="btn btn-primary px-5">Lưu sản phẩm</button>
+                <button type="submit" class="btn btn-primary px-5">Lưu sản phẩm</button>
             </div>
         </form>
     </div>
@@ -102,7 +101,7 @@
             const input = document.createElement("input");
             input.type = "file";
             input.accept = "image/*";
-            input.name = "images";
+            input.name = "images"; // This name is correct, matches List<IFormFile> images
             input.classList.add("form-control");
 
             const removeBtn = document.createElement("button");
@@ -148,21 +147,115 @@
             document.getElementById("totalFiles").value = previewWrapper.children.length;
         });
 
-        // Thêm danh mục
-        $('#btnSaveCategory').click(() => {
+        $('#btnSaveCategory').click(function () {
             const name = $('#newCategoryName').val().trim();
-            if (!name) return alert('Vui lòng nhập tên danh mục!');
+            if (!name) {
+                alert('Vui lòng nhập tên danh mục!');
+                return;
+            }
+
+            // Disable nút để tránh bấm liên tục
+            const $btn = $(this);
+            $btn.prop('disabled', true).text('Đang lưu...');
+
             $.ajax({
                 url: '/api/categories',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ categoryName: name, status: true }),
-                success: cat => {
-                    $('#CATEGORY_ID').append(`<option value="${cat.id}" selected>${name}</option>`);
-                    $('#newCategoryName').val('');
-                    $('#newCategoryContainer').hide();
+                data: JSON.stringify({ categoryName: name /*, status: true nếu model cần */ }),
+                success: function (response) {
+                    // response = { message: "...", data: { id, categoryName } }
+                    if (response && response.data) {
+                        const cat = response.data;
+                        // Thêm option mới
+                        $('#CATEGORY_ID').append(`<option value="${cat.id}" selected>${cat.categoryName}</option>`);
+                        // Reset input
+                        $('#newCategoryName').val('');
+                        // Ẩn container (nếu bạn muốn)
+                        // $('#newCategoryContainer').hide();
+                        // Hiển thị thông báo (có thể dùng toast)
+                        alert(response.message || 'Thêm thành công');
+                    } else {
+                        alert('Không nhận được dữ liệu trả về từ server.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText || error);
+                    alert('Thêm danh mục thất bại. Vui lòng thử lại.');
+                },
+                complete: function () {
+                    $btn.prop('disabled', false).text('Thêm danh mục');
                 }
             });
+        });
+
+        const $tagInput = $('#TAG_ID');
+
+        // Tạo khung suggestion
+        const $suggestBox = $('<div id="tagSuggestBox"></div>').css({
+            position: 'absolute',
+            border: '1px solid #ccc',
+            background: '#fff',
+            zIndex: 999,
+            width: $tagInput.outerWidth(),
+            maxHeight: '150px',
+            overflowY: 'auto',
+            display: 'none',
+            borderRadius: '5px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+        });
+
+        // Thêm box vào DOM
+        $tagInput.after($suggestBox);
+
+        // Khi gõ vào ô tag
+        $tagInput.on('input', function () {
+            const keyword = $(this).val().trim();
+            if (keyword.length < 2) {
+                $suggestBox.hide();
+                return;
+            }
+
+            $.ajax({
+                url: `/Admin/Tag/Goi-y-the?keyword=${encodeURIComponent(keyword)}`,
+                type: 'GET',
+                success: function (data) {
+                    $suggestBox.empty();
+
+                    if (data && data.length > 0) {
+                        data.forEach(tag => {
+                            const $item = $('<div></div>').text(tag)
+                                .css({
+                                    padding: '8px',
+                                    cursor: 'pointer'
+                                })
+                                .hover(
+                                    function () { $(this).css('background', '#f5f5f5'); },
+                                    function () { $(this).css('background', 'transparent'); }
+                                )
+                                .click(function () {
+                                    $tagInput.val(tag);
+                                    $suggestBox.hide();
+                                });
+
+                            $suggestBox.append($item);
+                        });
+                        $suggestBox.show();
+                    } else {
+                        $suggestBox.hide();
+                    }
+                },
+                error: function () {
+                    $suggestBox.hide();
+                }
+            });
+        });
+
+        // Ẩn box khi click ra ngoài
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#TAG_ID, #tagSuggestBox').length) {
+                $suggestBox.hide();
+            }
         });
     </script>
 }

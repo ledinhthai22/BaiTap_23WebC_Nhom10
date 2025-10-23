@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
     [Area("Admin")]

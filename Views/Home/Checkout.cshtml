@@ -26,11 +26,11 @@
                 </div>
 
                 <div class="single-sidebar">
-					@await Html.PartialAsync("~/Views/Shared/Partials/User/Product/_List-Product.cshtml")
+                    @await Component.InvokeAsync("ProductSidebar")
                 </div>
 
                 <div class="single-sidebar">
-					@await Html.PartialAsync("~/Views/Shared/Partials/User/Product/_Recent-Posts.cshtml")
+                    @await Component.InvokeAsync("ProductRecentPost")
                 </div>
             </div>
             <div class="col-md-8">
