@@ -1,26 +1,25 @@
 ﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
 
-<div class="related-products-wrapper">
-    <h2 class="related-products-title">Related Products</h2>
-    <div class="row">
-        @foreach (var p in Model)
-        {
-            <div class="col-md-3 single-product">
-                <div class="product-f-image" style="height: 270px; overflow: hidden;">
-                    <a href="#">
-                        <img src="@("/img/" + p.image)" alt="@p.productName"
-                             style="width: 100%; height: 100%; object-fit: contain;" />
-                    </a>
-                </div>
-                <h2><a href="#">@p.productName</a></h2>
-                <div class="product-carousel-price">
-                    <ins>$@p.price</ins>
-                    @if (p.discount > 0)
-                    {
-                        <del>$@(p.price / (1 - p.discount))</del>
-                    }
-                </div>
-            </div>
-        }
+@foreach (var p in Model)
+{
+    <div class="single-product">
+        <div class="product-f-image" style="height: 270px; overflow: hidden;">
+            <a href="/product/detail/@p.id">
+                <img src="@("/img/" + p.image)" alt="@p.productName"
+                     style="height: 100%; object-fit: contain; background-color:#ffffff;" />
+            </a>
+        </div>
+        <h2><a href="/product/detail/@p.id">@p.productName</a></h2>
+        <div class="product-carousel-price">
+
+            <ins>@p.price.ToString("N0") VNĐ</ins>
+
+            @if (p.discount > 0)
+            {
+                var originalPrice = Math.Round(p.price / (1 - p.discount));
+
+                <del>@originalPrice.ToString("N0") VNĐ</del>
+            }
+        </div>
     </div>
-</div>
+}

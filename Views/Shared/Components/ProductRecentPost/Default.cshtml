@@ -1,12 +1,12 @@
-﻿
+﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
 
 <div class="single-sidebar">
     <h2 class="sidebar-title">Recent Posts</h2>
     <ul>
-        @foreach (var p in Model)
+        @foreach (var p in Model.Take(5))
         {
             <li>
-                <a href="/Product/Details/@p.id">@p.productName</a>
+                <a href="/product/detail/@p.id">@p.productName</a>
             </li>
         }
     </ul>

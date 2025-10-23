@@ -11,7 +11,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRecentPost
         public ProductRecentPost(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:8000/"); // API Base URL
+            _httpClient.BaseAddress = new Uri("https://localhost:7021/"); // API Base URL
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
