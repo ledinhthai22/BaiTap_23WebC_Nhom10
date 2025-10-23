@@ -12,7 +12,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.API.Controllers
             _DbContext = context;
         }
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult GetCategories()
         {
             var category = _DbContext.Categories.ToList();
             return Ok(category);
