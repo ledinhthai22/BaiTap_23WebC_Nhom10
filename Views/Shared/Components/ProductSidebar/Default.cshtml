@@ -5,20 +5,24 @@
 
     @if (Model != null && Model.Any())
     {
-        @foreach (var item in Model.Take(5)) 
+        @foreach (var item in Model.Take(3)) 
         {
             <div class="thubmnail-recent mb-3">
-                <a href="#">
+                <a href="/product/detail/@item.id">
                     <img src="~/img/@item.image" alt="@item.productName" class="recent-thumb" style="width:100px;height:100px;object-fit:cover;">
                 </a>
                 <h2>
-                    <a href="#">@item.productName</a>
+                    <a href="/product/detail/@item.id">@item.productName</a>
                 </h2>
-                <div class="product-sidebar-price">
-                    <ins>@item.price.ToString("C0")</ins>
-                    @if (item.discount > 0)
+                <div class="product-carousel-price">
+
+                    <ins>@item.price.ToString("N0") VNĐ</ins>
+
+                    @if (@item.discount > 0)
                     {
-                        <del>@((item.price / (1 - item.discount / 100)).ToString("C0"))</del>
+                        var originalPrice = Math.Round(@item.price / (1 - @item.discount));
+
+                        <del>@originalPrice.ToString("N0") VNĐ</del>
                     }
                 </div>
             </div>
