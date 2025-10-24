@@ -13,7 +13,18 @@ public class SingleShopProduct : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var products = await _httpClient.GetFromJsonAsync<List<Product>>("/api/products");
+        List<Product>? products = null;
+
+        try
+        {
+            products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            products = new List<Product>();
+        }
+
         return View(products);
     }
 

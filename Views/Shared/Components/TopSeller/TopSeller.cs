@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BaiTap_23WebC_Nhom10.Models;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using BaiTap_23WebC_Nhom10.Areas.Admin.Controllers;
 namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.Home.Index.TopSeller
 {
     public class TopSeller : ViewComponent
@@ -12,24 +8,33 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.Home.Index.TopSeller
         public TopSeller(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7021/");
+            _httpClient.BaseAddress = new Uri("https://localhost:7214/"); // API base URL
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
 
-            List<Product> products = new List<Product>();
-
             try
             {
-                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
+                // Gọi API lấy danh sách sản phẩm
+                var response = await _httpClient.GetAsync("api/products");
+
+                if (!response.IsSuccessStatusCode)
+                    return Content("Không thể tải danh sách bài viết.");
+
+                var products = await response.Content.ReadFromJsonAsync<List<Product>>();
+
+                // Lấy 5 sản phẩm mới nhất
+                var recentProducts = products!
+                    .OrderByDescending(p => p.id) // hoặc p.CreatedDate nếu có
+                    .Take(3)
+                    .ToList();
+
+                return View(recentProducts);
             }
             catch (Exception ex)
             {
-                
-                Console.WriteLine($"Lỗi View Component TopSeller: {ex.Message}");
+                return Content("Lỗi: " + ex.Message);
             }
-
-            return View(products);
         }
     }
 }

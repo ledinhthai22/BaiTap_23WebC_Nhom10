@@ -1,7 +1,27 @@
-﻿<div class="col-md-4">
-    <div class="single-product-widget">
-        <h2 class="product-wid-title">Top Sellers</h2>
-        <a href="#" class="wid-view-more">View All</a>
-        @* Chèn data topSellers vào đây *@
-    </div>
+﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
+
+<h2 class="product-wid-title">Top Sellers</h2>
+<a href="#" class="wid-view-more">View All</a>
+<div class="single-wid-product">
+    @foreach (var p in Model)
+    {
+        <div class="single-wid-product">
+            <a href="#"><img src="@("/img/" + p.image)" alt="@p.productName" class="product-thumb"></a>
+            <h2><a href="#">@p.productName</a></h2>
+            <div class="product-wid-rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+            </div>
+            <div class="product-wid-price">
+                <ins>$@p.price</ins>
+                @if (p.discount > 0)
+                {
+                    <del>$@(p.price / (1 - p.discount))</del>
+                }
+            </div>
+        </div>
+    }
 </div>
