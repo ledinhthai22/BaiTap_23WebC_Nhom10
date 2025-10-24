@@ -29,6 +29,10 @@ namespace BaiTap_23WebC_Nhom10
             app.UseStaticFiles();
             app.MapStaticAssets();
             app.MapControllerRoute(
+                name: "product_detail",
+                pattern: "product/{slug}",
+                defaults: new { controller = "Product", action = "Detail" });
+            app.MapControllerRoute(
                  name: "areas",
                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 

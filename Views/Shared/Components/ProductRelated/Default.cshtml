@@ -1,7 +1,17 @@
 ﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
+@using System.Globalization;
 
 @foreach (var p in Model)
 {
+    var culture = new CultureInfo("vi-VN");
+
+    // Nếu discount là %, ví dụ 10, 20, 30
+    var discountRate = p.discount / 100;
+    var discountedPrice = p.price * (1 - discountRate);
+
+    var formattedDiscountedPrice = string.Format(culture, "{0:C0}", discountedPrice).Replace("₫", "VNĐ");
+    var formattedOriginalPrice = string.Format(culture, "{0:C0}", p.price).Replace("₫", "VNĐ");
+
     <div class="single-product">
         <div class="product-f-image" style="height: 270px; overflow: hidden;">
             <a href="/product/detail/@p.id">
@@ -9,16 +19,20 @@
                      style="height: 100%; object-fit: contain; background-color:#ffffff;" />
             </a>
         </div>
-        <h2><a href="/product/detail/@p.id">@p.productName</a></h2>
-        <div class="product-carousel-price">
 
-            <ins>@p.price.ToString("N0") VNĐ</ins>
+        <h2 class="text-center" style="font-size:16px; height:48px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+            <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.slug">@p.productName</a>
+        </h2>
 
+        <div class="product-carousel-price text-center">
             @if (p.discount > 0)
             {
-                var originalPrice = Math.Round(p.price / (1 - p.discount));
-
-                <del>@originalPrice.ToString("N0") VNĐ</del>
+                <ins>@formattedDiscountedPrice</ins>
+                <del>@formattedOriginalPrice</del>
+            }
+            else
+            {
+                <ins>@formattedOriginalPrice</ins>
             }
         </div>
     </div>

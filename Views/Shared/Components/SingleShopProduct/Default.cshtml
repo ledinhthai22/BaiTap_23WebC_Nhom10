@@ -3,10 +3,11 @@
 @foreach (var p in Model)
 {
     var culture = new CultureInfo("vi-VN");
-    var discountedPrice = p.price * (1 - p.discount);
+    var discountRate = p.discount / 100;
+    var discountedPrice = p.price * (1 - discountRate);
+
     var formattedDiscountedPrice = string.Format(culture, "{0:C0}", discountedPrice).Replace("₫", "VNĐ");
     var formattedOriginalPrice = string.Format(culture, "{0:C0}", p.price).Replace("₫", "VNĐ");
-    var detail = "/product/detail/" + @p.id;
     string[] imgPath = p.image.ToString().Split(";");
     var imgLogo = imgPath[0];
 
@@ -16,7 +17,7 @@
                 <img style="width: 300px; height: 300px; object-fit: cover;" src="img/@imgLogo" alt="">
             </div>
             <h2 class="text-center" style="font-size:16px; height:48px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-                <a href="@detail">@p.productName</a>
+                <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.slug">@p.productName</a>
             </h2>
             <div class="product-carousel-price text-center">
                 <ins>@formattedDiscountedPrice</ins> <del>@formattedOriginalPrice</del>

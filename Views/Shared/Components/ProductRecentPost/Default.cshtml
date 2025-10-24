@@ -6,7 +6,7 @@
         @foreach (var p in Model.Take(5))
         {
             <li>
-                <a href="/product/detail/@p.id">@p.productName</a>
+                <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.slug">@p.productName</a>
             </li>
         }
     </ul>
