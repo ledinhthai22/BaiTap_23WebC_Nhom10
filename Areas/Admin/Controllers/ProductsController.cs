@@ -1,7 +1,6 @@
-﻿using System.Net.Http.Json;
-using System.Threading.Channels;
-using BaiTap_23WebC_Nhom10.Data;
+﻿using BaiTap_23WebC_Nhom10.Data;
 using BaiTap_23WebC_Nhom10.Models;
+using BaiTap_23WebC_Nhom10.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
@@ -71,6 +70,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
                     description = form["DESCRIPTION"],
                     discount = decimal.TryParse(form["DISCOUNT"], out var d) ? d : 0,
                     categoryID = int.Parse(form["CATEGORY_ID"]),
+                    slug = SlugHelper.GenerateSlug(form["PRODUCT_NAME"]),
                     tagID = finalTagId,
                     status = true,
                     createAT = DateTime.Now
@@ -113,7 +113,12 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);  
+                Console.WriteLine("Error: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner: " + ex.InnerException.Message);
+                }
+                TempData["Error"] = "❌ Có lỗi khi thêm sản phẩm: " + ex.Message;
                 return RedirectToAction("Create");
             }
         }

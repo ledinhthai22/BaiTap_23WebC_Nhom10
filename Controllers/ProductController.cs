@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BaiTap_23WebC_Nhom10.Data;
-using BaiTap_23WebC_Nhom10.Models;
+﻿using BaiTap_23WebC_Nhom10.Data;
+using BaiTap_23WebC_Nhom10.Utils;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Controllers
 {
+    [Route("product")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,14 +19,16 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Detail(int id)
+        [HttpGet("{slug}")]
+        public IActionResult Detail(string slug)
         {
-            var product = _context.Products.Find(id);
+            var product = _context.Products
+                .Include(p => p.category)
+                .FirstOrDefault(p => p.slug == slug);
+
             if (product == null)
-            {
                 return NotFound();
-            }
+
             return View(product);
         }
     }

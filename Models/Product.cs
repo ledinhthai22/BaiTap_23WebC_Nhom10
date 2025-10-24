@@ -57,6 +57,10 @@ namespace BaiTap_23WebC_Nhom10.Models
 
         [Column("UPDATE_AT")]
         public DateTime? updateAT { get; set; }
+        [Column("SLUG")]
+        [Required] 
+        [MaxLength(255)] 
+        public string? slug { get; set; }
         public Category ? category { get; set; }
     }
 }

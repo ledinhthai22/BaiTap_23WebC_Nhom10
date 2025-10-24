@@ -9,7 +9,13 @@ namespace BaiTap_23WebC_Nhom10.Data
         {
         }
 
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+           
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.slug)
+                .IsUnique();
+        }
         public DbSet<Product> Products { get; set; }
         public DbSet<Tag> Tags { get; set; }
         
