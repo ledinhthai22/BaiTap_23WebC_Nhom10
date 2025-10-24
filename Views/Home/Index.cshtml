@@ -322,27 +322,12 @@
     <div class="zigzag-bottom"></div>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <div class="single-product-widget">
-                    <h2 class="product-wid-title">Top Sellers</h2>
-                    <a href="#" class="wid-view-more">View All</a>
-                    @* Chèn data topSellers vào đây *@
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="single-product-widget">
-                    <h2 class="product-wid-title">Recently Viewed</h2>
-                    <a href="#" class="wid-view-more">View All</a>
-                    @* Chèn data recentView vào đây *@
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="single-product-widget">
-                    <h2 class="product-wid-title">Top New</h2>
-                    <a href="#" class="wid-view-more">View All</a>
-                    @* Chèn data topNew vào đây *@
-                </div>
-            </div>
+            @*TopSellers*@
+            @await Component.InvokeAsync("TopSeller")
+            @*Recently Viewed*@
+            @await Component.InvokeAsync("RecentlyViewed")
+            @*TopNew*@
+            @await Component.InvokeAsync("TopNew")
         </div>
     </div>
 </div>
