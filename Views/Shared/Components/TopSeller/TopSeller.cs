@@ -16,16 +16,16 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.Home.Index.TopSeller
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-
+            // Move the await statement out of the complex statement for better edit-and-continue support
             List<Product> products = new List<Product>();
 
             try
             {
-                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
+                var result = await _httpClient.GetFromJsonAsync<List<Product>>("api/products/type/topsellers");
+                products = result ?? new List<Product>();
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine($"Lỗi View Component TopSeller: {ex.Message}");
             }
 

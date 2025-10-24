@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BaiTap_23WebC_Nhom10.Data;
 using Microsoft.EntityFrameworkCore;
 namespace BaiTap_23WebC_Nhom10
@@ -11,10 +12,19 @@ namespace BaiTap_23WebC_Nhom10
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient();
             var conStr = builder.Configuration.GetConnectionString("DefaultConnect");
+
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(conStr);
-            }); //Ket Noi EF Core o day ... 
+            }); 
+            builder.Services.AddControllers()
+            .AddJsonOptions(opt =>
+            {
+                opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                opt.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            });
+
             var app = builder.Build();
             if (!app.Environment.IsDevelopment())
             {

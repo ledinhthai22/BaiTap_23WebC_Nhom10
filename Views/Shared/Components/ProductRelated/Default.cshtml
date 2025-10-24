@@ -5,27 +5,36 @@
 {
     var culture = new CultureInfo("vi-VN");
 
-    // Nếu discount là %, ví dụ 10, 20, 30
-    var discountRate = p.discount / 100;
-    var discountedPrice = p.price * (1 - discountRate);
+    
+    var discountRate = (p.Discount ?? 0) / 100;
+    var discountedPrice = p.Price * (1 - discountRate);
 
-    var formattedDiscountedPrice = string.Format(culture, "{0:C0}", discountedPrice).Replace("₫", "VNĐ");
-    var formattedOriginalPrice = string.Format(culture, "{0:C0}", p.price).Replace("₫", "VNĐ");
+    var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
+    var formattedOriginalPrice = string.Format(culture, "{0:N0}", p.Price) + " VNĐ";
+
+  
+    var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
+               ?? p.ProductImages?.FirstOrDefault()?.ImagePath
+               ?? "/img/no-image.png";
 
     <div class="single-product">
         <div class="product-f-image" style="height: 270px; overflow: hidden;">
-            <a href="/product/detail/@p.id">
-                <img src="@("/img/" + p.image)" alt="@p.productName"
-                     style="height: 100%; object-fit: contain; background-color:#ffffff;" />
+            <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+                <img src="@Url.Content(imgMain)"
+                     alt="@p.ProductName"
+                     style="width: 100%; height: 100%; object-fit: cover; background-color: #fff;"
+                     onerror="this.onerror=null; this.src='/img/no-image.png';" />
             </a>
         </div>
 
         <h2 class="text-center" style="font-size:16px; height:48px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-            <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.slug">@p.productName</a>
+            <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+                @p.ProductName
+            </a>
         </h2>
 
         <div class="product-carousel-price text-center">
-            @if (p.discount > 0)
+            @if (p.Discount > 0)
             {
                 <ins>@formattedDiscountedPrice</ins>
                 <del>@formattedOriginalPrice</del>

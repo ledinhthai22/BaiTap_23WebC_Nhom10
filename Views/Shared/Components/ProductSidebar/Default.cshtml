@@ -1,5 +1,6 @@
 ﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
 @using System.Globalization;
+
 <div class="single-sidebar">
     <h2 class="sidebar-title">Products</h2>
 
@@ -8,22 +9,33 @@
         @foreach (var p in Model.Take(3))
         {
             var culture = new CultureInfo("vi-VN");
-            var discountRate = p.discount / 100;
-            var discountedPrice = p.price * (1 - discountRate);
 
-            var formattedDiscountedPrice = string.Format(culture, "{0:C0}", discountedPrice).Replace("₫", "VNĐ");
-            var formattedOriginalPrice = string.Format(culture, "{0:C0}", p.price).Replace("₫", "VNĐ");
+            
+            var discountedPrice = p.Price * (1 - discountRate);
+
+            var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
+            var formattedOriginalPrice = string.Format(culture, "{0:N0}", p.Price) + " VNĐ";
+
+          
+            var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
+            ?? p.ProductImages?.FirstOrDefault()?.ImagePath
+            ?? "/img/no-image.png";
 
             <div class="thubmnail-recent mb-3">
-                <a href="/product/detail/@p.id">
-                    <img src="~/img/@p.image" alt="@p.productName" class="recent-thumb" style="width:100px;height:100px;object-fit:cover;">
+                <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+                    <img src="@Url.Content(imgMain)"
+                         alt="@p.ProductName"
+                         class="recent-thumb"
+                         style="width:100px; height:100px; object-fit:cover; border-radius:6px;"
+                         onerror="this.onerror=null; this.src='/img/no-image.png';" />
                 </a>
-                <h2>
-                    <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.slug">@p.productName</a>
+                <h2 style="font-size:14px; margin-top:8px;">
+                    <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+                        @p.ProductName
+                    </a>
                 </h2>
                 <div class="product-carousel-price">
-
-                    @if (p.discount > 0)
+                    @if (p.Discount > 0)
                     {
                         <ins>@formattedDiscountedPrice</ins>
                         <del>@formattedOriginalPrice</del>

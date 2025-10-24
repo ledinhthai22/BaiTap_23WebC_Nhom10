@@ -39,7 +39,16 @@ namespace BaiTap_23WebC_Nhom10.Utils
 
             return str;
         }
+        public static string GenerateFileNameSafe(string productName)
+        {
+            if (string.IsNullOrWhiteSpace(productName))
+                return "UNKNOWN";
 
+            string name = RemoveVietnameseDiacritics(productName);
+            name = Regex.Replace(name, @"[^a-zA-Z0-9]", ""); // chỉ giữ lại chữ và số
+            name = name.ToUpperInvariant(); // viết hoa toàn bộ
+            return name;
+        }
         private static string RemoveVietnameseDiacritics(string text)
         {
             // (Giữ nguyên hàm của bạn - đã hoạt động tốt cho mục đích này)

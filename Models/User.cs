@@ -9,44 +9,44 @@ namespace BaiTap_23WebC_Nhom10.Models
     {
         [Column("ID")]
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Column("NAME")]
         [StringLength(255)]
         [Required(ErrorMessage = "Tên là bắt buộc")]
-        public string? name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập là bắt buộc")]
         [StringLength(255)]
         [Column("USER_NAME")]
-        public string userName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
 
         [Column("PASSWORD")]
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [StringLength(255)]
-        public string passWord { get; set; } = string.Empty;
+        public string PassWord { get; set; } = string.Empty;
 
         [Column("ROLE_ID")]
-        [ForeignKey("Role")]
-        public int roleID { get; set; }
+        [ForeignKey("ROLE")]
+        public int RoleID { get; set; }
 
         [Column("EMAIL")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         [StringLength(255)]
-        
-        public string? email { get; set; }
-        
+
+        public string? Email { get; set; }
+
         [Column("PHONE")]
         [StringLength(32)]
-        public string? phone { get; set; }
+        public string? Phone { get; set; }
 
         [Column("STATUS")]
-        public bool status { get; set; } = true;
+        public bool Status { get; set; } = true;
 
         [Column("CREATE_AT")]
-        public DateTime? createAt { get; set; } = DateTime.Now;
+        public DateTime? CreateAt { get; set; } = DateTime.Now;
 
         [Column("UPDATE_AT")]
-        public DateTime? updateAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
     }
 }

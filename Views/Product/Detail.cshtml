@@ -1,25 +1,17 @@
 ﻿@using System.Globalization
 @model BaiTap_23WebC_Nhom10.Models.Product
 @section title {
-        Product - eElectronics - HTML eCommerce Template
+    Product - eElectronics - HTML eCommerce Template
 }
 @section subtitle {
-    <div class="product-big-title-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="product-bit-title text-center">
-                        <h2>@Model.productName</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 }
 @{
     var cultureInfo = new CultureInfo("vi-VN");
-    var finalPrice = Model.price * (1 - Model.discount);
+    var discountRate = Model.Discount / 100; // chuyển % sang tỷ lệ
+    var finalPrice = Model.Price * (1 - discountRate);
 }
+
 <div class="single-product-area">
     <div class="zigzag-bottom"></div>
     <div class="container">
@@ -32,45 +24,53 @@
                         <input type="submit" value="Search" />
                     </form>
                 </div>
-
                 @await Component.InvokeAsync("ProductSidebar")
-
                 @await Component.InvokeAsync("ProductRecentPost")
             </div>
 
             <div class="col-md-8">
                 <div class="product-content-right">
-                    <div class="product-breadcroumb">
-                        <a href="">Home</a>
-                        <a href="">Category</a>
-                        <a href="">@Model.productName</a>
-                    </div>
-
+                    <h2>@Model.ProductName</h2>
+                    @{
+                        // Tìm ảnh chính để đặt làm src ban đầu
+                        var initialMainImage = Model.ProductImages?.FirstOrDefault(i => i.IsMain);
+                        var initialMainImagePath = initialMainImage?.ImagePath ?? "~/img/no-image.png";
+                    }
                     <div class="row">
-                        <div class="col-sm-6">
-                            <div class="product-images">
-                                <div class="product-main-img" style="height:270%; width:100% ">
-                                    <img src="~/img/@Model.image" alt="@Model.productName" />
-                                </div>
-                                @*
-                                <div class="product-gallery">
-                                    <img src="img/product-thumb-1.jpg" alt="" />
-                                    <img src="img/product-thumb-2.jpg" alt="" />
-                                    <img src="img/product-thumb-3.jpg" alt="" />
-                                    <img src="img/product-thumb-4.jpg" alt="" />
-                                </div>
-                                 *@
+                        <div class="col-sm-6" style="position: relative;">
+                            <img id="mainProductImg"
+                                 src="@Url.Content(initialMainImagePath)"
+                                 alt="@Model.ProductName"
+                                 style="max-width:100%; height:auto;" />
+
+                            <div class="product-gallery" id="productGallery" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+
+                               
+                                @foreach (var img in Model.ProductImages)
+                                {
+                                    
+                                       
+                                        var isInitialMain = img.IsMain;
+                                        var thumbnailBorder = isInitialMain ? "2px solid #5a8" : "1px solid #ddd"; 
+                                   
+                                    <div class="thumbnail-item" style="width: 80px; height: 80px; overflow: hidden; border: @thumbnailBorder; border-radius: 8px;">
+                                        <img src="@Url.Content(img.ImagePath)"
+                                             alt="@Model.ProductName"
+                                             style="width:100%; height:100%; object-fit:cover; cursor:pointer;"
+                                             onclick="changeMainImage('@Url.Content(img.ImagePath)', this)" />
+                                    </div>
+                                }
                             </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="product-inner">
-                                <h2 class="product-name">@Model.productName</h2>
+                                <h2 class="product-name">@Model.ProductName</h2>
                                 <div class="product-inner-price">
-                                    <ins>@finalPrice.ToString("N0", cultureInfo) VNĐ</ins>
-                                    @if (Model.discount > 0)
+                                    <ins>@String.Format(cultureInfo, "{0:N0} VNĐ", finalPrice)</ins>
+                                    @if (Model.Discount > 0)
                                     {
-                                        <del>@Model.price.ToString("N0", cultureInfo) VNĐ</del>
+                                        <del>@String.Format(cultureInfo, "{0:N0} VNĐ", Model.Price)</del>
                                     }
                                 </div>
 
@@ -92,8 +92,8 @@
 
                                 <div class="product-inner-category">
                                     <p>
-                                        Category: <a href="">unknow</a>. Tags:
-                                        <a href="">unknow</a>.
+                                        Category: <a href="">@Model.Category?.CategoryName</a>.
+                                        Tags:<a href="">@Model.Tag?.TagName</a>.
                                     </p>
                                 </div>
 
@@ -118,7 +118,7 @@
                                              id="home">
                                             <h2>Product Description</h2>
                                             <p>
-                                                @Model.description
+                                                @Model.Description
                                             </p>
 
                                         </div>
@@ -159,7 +159,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="related-products-wrapper">
                         <h2 class="related-products-title">Related Products</h2>
                         <div class="related-products-carousel">
@@ -171,4 +170,49 @@
         </div>
     </div>
 </div>
+@section js {
+    <style>
+        .thumbnail-item {
+            transition: border-color 0.2s;
+        }
 
+        .thumbnail-item.active {
+                border: 2px solid #1abc9c !important; 
+        }
+    </style>
+    <script>
+        const mainImg = document.getElementById('mainProductImg');
+        const gallery = document.getElementById('productGallery');
+        const thumbnails = gallery.querySelectorAll('.thumbnail-item');
+
+        
+        function changeMainImage(newSrc, clickedElement) {
+            
+            mainImg.src = newSrc;
+
+           
+            thumbnails.forEach(item => {
+                item.classList.remove('active');
+                item.style.border = '1px solid #ddd';
+            });
+
+           
+            const parentDiv = clickedElement.closest('.thumbnail-item');
+            if (parentDiv) {
+                parentDiv.classList.add('active');
+                parentDiv.style.border = '2px solid #1abc9c';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialMainSrc = mainImg.getAttribute('src');
+            thumbnails.forEach(item => {
+                const img = item.querySelector('img');
+                if (img && img.getAttribute('src') === initialMainSrc) {
+                    item.classList.add('active');
+                    item.style.border = '2px solid #1abc9c';
+                }
+            });
+        });
+    </script>
+}

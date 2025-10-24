@@ -22,7 +22,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.TopNew
 
             try
             {
-                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
+                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products/type/topnew") ?? new List<Product>();
             }
             catch (Exception ex)
             {

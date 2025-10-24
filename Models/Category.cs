@@ -6,18 +6,14 @@ namespace BaiTap_23WebC_Nhom10.Models
     [Table("CATEGORY")]
     public class Category
     {
-        
         [Key]
         [Column("ID")]
-        public int id { get; set; }
-        
-        [Required(ErrorMessage = "Tên danh mục là bắt buộc")]
-        [StringLength(255, ErrorMessage = "Tên danh mục tối đa 255 ký tự")]
+        public int Id { get; set; }
         [Column("CATEGORY_NAME")]
-        public string categoryName { get; set; } = string.Empty;
+        public string? CategoryName { get; set; }
         [Column("STATUS")]
-        [Required]
-        public bool status { get; set; }
-        public List<Product> Products { get; set; } = new();
+        public bool Status { get; set; } = true;
+
+        public Product? Products { get; set; }
     }
 }

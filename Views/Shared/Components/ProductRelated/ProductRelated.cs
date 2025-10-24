@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BaiTap_23WebC_Nhom10.Models; // chứa class Product
+using BaiTap_23WebC_Nhom10.Models; 
 
 namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRelated
 {
@@ -10,12 +10,12 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRelated
         public ProductRelated(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5021/"); // API base URL
+            _httpClient.BaseAddress = new Uri("http://localhost:5021/"); 
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int? id = null)
         {
-            // Lấy danh sách sản phẩm từ API
+
             var response = await _httpClient.GetAsync("api/products");
             if (!response.IsSuccessStatusCode)
             {
@@ -24,10 +24,10 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRelated
 
             var products = await response.Content.ReadFromJsonAsync<List<Product>>();
 
-            // Nếu có id (ví dụ sản phẩm hiện tại), bạn có thể lọc sản phẩm liên quan
+            
             if (id != null)
             {
-                products = products!.Where(p => p.id != id).Take(4).ToList(); // 4 sản phẩm liên quan
+                products = products!.Where(p => p.Id != id).Take(4).ToList();
             }
 
             return View(products);

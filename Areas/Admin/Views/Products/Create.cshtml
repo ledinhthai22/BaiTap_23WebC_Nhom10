@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BaiTap_23WebC_Nhom10.Models.Category
+@{
     Layout = "_Layout";
 }
 @section Title {
@@ -38,7 +39,7 @@
                         <option value="">-- Chọn danh mục --</option>
                         @foreach (var c in ViewBag.Categories)
                         {
-                            <option value="@c.id">@c.categoryName</option>
+                            <option value="@c.Id">@c.CategoryName</option>
                         }
                     </select>
 
@@ -79,7 +80,7 @@
         // Hàm cập nhật lại counter khi xóa ảnh
         function updateCounter() {
             if (previewWrapper.children.length === 0) {
-                counter = 0; // Reset lại khi không còn ảnh nào
+                counter = 0; 
             }
         }
 
@@ -89,7 +90,7 @@
                 return;
             }
 
-            // Tăng biến đếm mỗi khi thêm ảnh
+           
             counter++;
 
             const container = document.createElement("div");
@@ -101,7 +102,7 @@
             const input = document.createElement("input");
             input.type = "file";
             input.accept = "image/*";
-            input.name = "images"; // This name is correct, matches List<IFormFile> images
+            input.name = "images"; 
             input.classList.add("form-control");
 
             const removeBtn = document.createElement("button");
@@ -112,7 +113,7 @@
             removeBtn.style.right = "2px";
             removeBtn.style.zIndex = "10";
 
-            // Khi chọn ảnh -> hiển thị preview
+            /
             input.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -132,7 +133,6 @@
                 }
             });
 
-            // Khi xóa ảnh
             removeBtn.addEventListener("click", () => {
                 container.remove();
                 updateCounter();
@@ -154,7 +154,6 @@
                 return;
             }
 
-            // Disable nút để tránh bấm liên tục
             const $btn = $(this);
             $btn.prop('disabled', true).text('Đang lưu...');
 
@@ -162,14 +161,14 @@
                 url: '/api/categories',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ categoryName: name /*, status: true nếu model cần */ }),
+                data: JSON.stringify({ categoryName: name }),
                 success: function (response) {
-                    // response = { message: "...", data: { id, categoryName } }
+                    
                     if (response && response.data) {
                         const cat = response.data;
-                        // Thêm option mới
+                       
                         $('#CATEGORY_ID').append(`<option value="${cat.id}" selected>${cat.categoryName}</option>`);
-                        // Reset input
+                       
                         $('#newCategoryName').val('');
                         // Ẩn container (nếu bạn muốn)
                         // $('#newCategoryContainer').hide();
@@ -191,7 +190,7 @@
 
         const $tagInput = $('#TAG_ID');
 
-        // Tạo khung suggestion
+       
         const $suggestBox = $('<div id="tagSuggestBox"></div>').css({
             position: 'absolute',
             border: '1px solid #ccc',
@@ -205,10 +204,10 @@
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
         });
 
-        // Thêm box vào DOM
+       
         $tagInput.after($suggestBox);
 
-        // Khi gõ vào ô tag
+        
         $tagInput.on('input', function () {
             const keyword = $(this).val().trim();
             if (keyword.length < 2) {
@@ -251,7 +250,7 @@
             });
         });
 
-        // Ẩn box khi click ra ngoài
+      
         $(document).on('click', function (e) {
             if (!$(e.target).closest('#TAG_ID, #tagSuggestBox').length) {
                 $suggestBox.hide();

@@ -21,7 +21,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var tag = _dbContext.Tags
-               .OrderByDescending(t => t.id)
+               .OrderByDescending(t => t.Id)
                .ToList();
             return View(tag);
         }
@@ -32,8 +32,8 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
                 return Json(new List<string>());
 
             var suggestions = _dbContext.Tags
-                .Where(t => t.tagName.Contains(keyword))
-                .Select(t => t.tagName)
+                .Where(t => t.TagName.Contains(keyword))
+                .Select(t => t.TagName)
                 .ToList();
 
             return Json(suggestions);
