@@ -15,25 +15,25 @@ namespace BaiTap_23WebC_Nhom10.Areas.API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var category = _DbContext.Categories.Select(c => new { c.id ,c.categoryName }).ToList();
+            var category = _DbContext.Categories.Select(c => new { c.Id ,c.CategoryName }).ToList();
             return Ok(category);
         }
         [HttpPost]
         public IActionResult Create([FromBody] Category model)
         {
-            if (model == null || string.IsNullOrWhiteSpace(model.categoryName))
+            if (model == null || string.IsNullOrWhiteSpace(model.CategoryName))
             {
                 return BadRequest(new { message = "Tên danh mục không hợp lệ." });
             }
 
-            // Nếu model.status là bool hoặc int? đảm bảo gán mặc định
-            model.status = true; // hoặc 1 nếu bạn dùng int
+           
+            model.Status = true; 
 
             _DbContext.Categories.Add(model);
             _DbContext.SaveChanges();
 
-            // Trả về object đã tạo (chỉ trả những trường cần thiết)
-            var result = new { id = model.id, categoryName = model.categoryName };
+           
+            var result = new { id = model.Id, categoryName = model.CategoryName };
             return Ok(new { message = "Thêm danh mục thành công", data = result });
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BaiTap_23WebC_Nhom10.Migrations;
 
 namespace BaiTap_23WebC_Nhom10.Models
 {
@@ -8,59 +9,54 @@ namespace BaiTap_23WebC_Nhom10.Models
     {
         [Key]
         [Column("ID")]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        [Required(ErrorMessage = "Tên sản phẩm là bắt buộc")]
-        [StringLength(255)]
         [Column("PRODUCT_NAME")]
-        public string productName { get; set; } = string.Empty;
+        public string? ProductName { get; set; }
 
-        [Range(0, 9999999999999999.99, ErrorMessage = "Giá không hợp lệ")]
-        [Column("PRICE", TypeName = "decimal(18,2)")]
-        public decimal price { get; set; }
+        [Column("PRICE")]
+        public decimal Price { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Giảm giá phải từ 0% đến 100%")]
-        [Column("DISCOUNT", TypeName = "decimal(5,2)")]
-        public decimal discount { get; set; }
-
-        [StringLength(255)]
-        [Column("IMAGE")]
-        public string? image { get; set; }
-
-        [StringLength(255)]
-        [Column("DESCRIPTION")]
-        public string? description { get; set; }
-
-        [Range(0, int.MaxValue)]
         [Column("QUANLITY")]
-        public int? quanlity { get; set; }
+        public int Quanlity { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn danh mục")]
+        [Column("DESCRIPTION")]
+        public string? Description { get; set; }
+
+        [Column("DISCOUNT")]
+        public decimal? Discount { get; set; }
+
         [Column("CATEGORY_ID")]
-        [ForeignKey("Category")]
-        public int categoryID { get; set; }
+        [ForeignKey("CATEGORY")]
+        public int? CategoryId { get; set; }
 
         [Column("TAG_ID")]
-        public int? tagID { get; set; }
+        [ForeignKey("TAGS")]
+        public int? TagId { get; set; }
 
         [Column("VIEWS")]
-        public int views { get; set; } = 0;
+        public int Views { get; set; } = 0;
 
         [Column("SELLED")]
-        public int selled { get; set; } = 0;
+        public int Selled { get; set; } = 0;
 
         [Column("STATUS")]
-        public bool status { get; set; } = true;
+        public bool Status { get; set; } = true;
+
+        [Column("SLUG")]
+        public string? Slug { get; set; }
 
         [Column("CREATE_AT")]
-        public DateTime createAT { get; set; } = DateTime.Now;
+        public DateTime CreateAt { get; set; } = DateTime.Now;
 
         [Column("UPDATE_AT")]
-        public DateTime? updateAT { get; set; }
-        [Column("SLUG")]
-        [Required] 
-        [MaxLength(255)] 
-        public string? slug { get; set; }
-        public Category ? category { get; set; }
+        public DateTime? UpdateAt { get; set; }
+
+        // Navigation
+        public Category? Category { get; set; }
+        public Tag? Tag { get; set; }
+        //public ICollection<Comment> Comments { get; set; }
+        public ICollection<ProductImage>? ProductImages { get; set; }
+        //public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

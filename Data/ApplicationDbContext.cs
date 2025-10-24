@@ -13,10 +13,11 @@ namespace BaiTap_23WebC_Nhom10.Data
         {
            
             modelBuilder.Entity<Product>()
-                .HasIndex(p => p.slug)
+                .HasIndex(p => p.Slug)
                 .IsUnique();
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Tag> Tags { get; set; }
         
         public DbSet<Category> Categories { get; set; }

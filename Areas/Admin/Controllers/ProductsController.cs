@@ -3,6 +3,7 @@ using BaiTap_23WebC_Nhom10.Models;
 using BaiTap_23WebC_Nhom10.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -22,7 +23,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            var product = _context.Products.Include(p => p.category).OrderByDescending(p => p.id).ToList();
+            var product = _context.Products.Include(p => p.Category).OrderByDescending(p => p.Id).ToList();
             return View(product);
         }
 
@@ -39,89 +40,91 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(IFormCollection form, List<IFormFile> images)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Kiểm tra dữ liệu đầu vào
                 if (string.IsNullOrEmpty(form["PRODUCT_NAME"]))
                 {
-                    TempData["Error"] = "⚠️ Tên sản phẩm không được bỏ trống.";
+                    TempData["Error"] = "Tên sản phẩm không được bỏ trống.";
                     return RedirectToAction("Create");
                 }
 
-                // Lấy Tag ID (nếu có)
                 string tagName = form["TAG_ID"];
                 int? finalTagId = null;
                 if (!string.IsNullOrEmpty(tagName))
                 {
-                    var existingTag = await _context.Tags.FirstOrDefaultAsync(t => t.tagName == tagName);
+                    var existingTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName);
                     if (existingTag != null)
-                    {
-                        finalTagId = existingTag.id;
-                    }
+                        finalTagId = existingTag.Id;
                 }
 
-                // Lưu ý: Trong form bạn đang đặt name="QUANLITY" nhưng property là "quanlity" => vẫn ổn, miễn đúng name.
-                // Nếu form đặt sai thì phải đổi cho khớp.
                 var product = new Product
                 {
-                    productName = form["PRODUCT_NAME"],
-                    price = decimal.TryParse(form["PRICE"], out var priceValue) ? priceValue : 0,
-                    quanlity = int.TryParse(form["QUANLITY"], out var q) ? q : 0,
-                    description = form["DESCRIPTION"],
-                    discount = decimal.TryParse(form["DISCOUNT"], out var d) ? d : 0,
-                    categoryID = int.Parse(form["CATEGORY_ID"]),
-                    slug = SlugHelper.GenerateSlug(form["PRODUCT_NAME"]),
-                    tagID = finalTagId,
-                    status = true,
-                    createAT = DateTime.Now
+                    ProductName = form["PRODUCT_NAME"],
+                    Price = decimal.TryParse(form["PRICE"], out var priceValue) ? priceValue : 0,
+                    Quanlity = int.TryParse(form["QUANLITY"], out var q) ? q : 0,
+                    Description = form["DESCRIPTION"],
+                    Discount = decimal.TryParse(form["DISCOUNT"], out var d) ? d : 0,
+                    CategoryId = int.TryParse(form["CATEGORY_ID"], out var catId) ? catId : null,
+                    Slug = SlugHelper.GenerateSlug(form["PRODUCT_NAME"]),
+                    TagId = finalTagId,
+                    Status = true,
+                    CreateAt = DateTime.Now
                 };
 
-                // 2️ Đường dẫn thư mục upload
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+
+                //Lưu file ảnh
                 string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "uploads", "products");
                 if (!Directory.Exists(uploadFolder))
                     Directory.CreateDirectory(uploadFolder);
 
-                List<string> fileNames = new();
-
-                foreach (var file in images)
+                int index = 0;
+                foreach (var file in images.Where(f => f != null && f.Length > 0))
                 {
-                    if (file != null && file.Length > 0)
+
+                    string ext = Path.GetExtension(file.FileName);
+                    string safeProductName = SlugHelper.GenerateSlug(product.ProductName.ToLower());
+
+                    // Đặt tên file ảnh theo định dạng yêu cầu
+                    string fileName = $"{DateTime.Now:yyyyMMddHHmmss}-{safeProductName}-{index}{ext}";
+
+                    // Tạo đường dẫn tuyệt đối để lưu vật lý
+                    string filePath = Path.Combine(uploadFolder, fileName);
+
+                    // Ghi file vật lý
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        // ⚡ Format: yyyyMMdd-HHmmss-tensanpham-tengoc.jpg
-                        string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
-                        string safeProductName = new string(product.productName
-                            .Where(c => !Path.GetInvalidFileNameChars().Contains(c))
-                            .ToArray());
-                        string ext = Path.GetExtension(file.FileName);
-                        string uniqueName = $"{timestamp}-{safeProductName}{ext}";
-                        string filePath = Path.Combine(uploadFolder, uniqueName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                        }
-
-                        fileNames.Add($"/img/uploads/products/{uniqueName}");
+                        await file.CopyToAsync(stream);
                     }
+
+                    // Thêm bản ghi vào bảng PRODUCT_IMAGES
+                    var img = new ProductImage
+                    {
+                        ProductId = product.Id,
+                        ImagePath = $"/img/uploads/products/{fileName}",
+                        IsMain = (index == 0)
+                    };
+                    _context.ProductImages.Add(img);
+
+                    index++;
                 }
 
-                product.image = string.Join(";", fileNames);
-
-                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                TempData["Success"] = "✅ Thêm sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine("Inner: " + ex.InnerException.Message);
-                }
-                TempData["Error"] = "Có lỗi khi thêm sản phẩm: " + ex.Message;
+                await transaction.RollbackAsync();
+                TempData["Error"] = "Lỗi khi thêm sản phẩm: " + ex.Message;
                 return RedirectToAction("Create");
             }
         }
+
 
     }
 }

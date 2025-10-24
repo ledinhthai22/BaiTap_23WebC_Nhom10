@@ -8,11 +8,9 @@ namespace BaiTap_23WebC_Nhom10.Models
     {
         [Column("ID")]
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Column("TAG_NAME")]
-        [Required(ErrorMessage = "Tên tag là bắt buộc")]
-        [StringLength(255, ErrorMessage = "Tên tag tối đa 255 ký tự")]
-        public string tagName { get; set; } = string.Empty;
+        public string TagName { get; set; } = string.Empty;
     }
 }

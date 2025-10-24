@@ -1,7 +1,45 @@
-﻿<div class="col-md-4">
-    <div class="single-product-widget">
-        <h2 class="product-wid-title">Top Sellers</h2>
-        <a href="#" class="wid-view-more">View All</a>
-        @* Chèn data topSellers vào đây *@
+﻿@model List<BaiTap_23WebC_Nhom10.Models.Product>
+@using System.Globalization
+
+@foreach (var p in Model)
+{
+    var culture = new CultureInfo("vi-VN");
+    var discountRate = (p.Discount ?? 0) / 100; 
+    var discountedPrice = p.Price * (1 - discountRate);
+
+    var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
+    var formattedOriginalPrice = string.Format(culture, "{0:N0}", p.Price) + " VNĐ";
+
+   
+    var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
+               ?? p.ProductImages?.FirstOrDefault()?.ImagePath
+               ?? "/img/no-image.png";
+    <div class="single-wid-product">
+        <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+            <img src="@Url.Content(imgMain)" alt="@p.ProductName" class="product-thumb"
+                 onerror="this.onerror=null; this.src='/img/no-image.png';" />
+        </a>
+
+        <h2>
+            <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug">
+                @p.ProductName
+            </a>
+        </h2>
+
+        <div class="product-wid-rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+        </div>
+
+        <div class="product-wid-price">
+            <ins>@formattedDiscountedPrice</ins>
+            @if (p.Discount > 0)
+            {
+                <del>@formattedOriginalPrice</del>
+            }
+        </div>
     </div>
-</div>
+}

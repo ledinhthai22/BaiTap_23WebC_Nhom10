@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json; // Dùng để đọc JSON
-using BaiTap_23WebC_Nhom10.Models; // Model Product
+using System.Net.Http.Json; 
+using BaiTap_23WebC_Nhom10.Models; 
 
 namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRecentPost
 {
@@ -11,14 +11,14 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRecentPost
         public ProductRecentPost(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:5021/"); // API Base URL
+            _httpClient.BaseAddress = new Uri("http://localhost:5021/"); 
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             try
             {
-                // Gọi API lấy danh sách sản phẩm
+             
                 var response = await _httpClient.GetAsync("api/products");
 
                 if (!response.IsSuccessStatusCode)
@@ -26,9 +26,9 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.ProductRecentPost
 
                 var products = await response.Content.ReadFromJsonAsync<List<Product>>();
 
-                // Lấy 5 sản phẩm mới nhất
+               
                 var recentProducts = products!
-                    .OrderByDescending(p => p.id) // hoặc p.CreatedDate nếu có
+                    .OrderByDescending(p => p.Id) // hoặc p.CreatedDate nếu có
                     .Take(5)
                     .ToList();
 

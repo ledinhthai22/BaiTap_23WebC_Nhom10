@@ -8,164 +8,12 @@
 }
 
 @section title {
-        eElectronics - HTML eCommerce Template
+            eElectronics - HTML eCommerce Template
 }
 @section css {
 
 }
 
-@section js {
-    <script>
-        $(document).ready(function () {
-            if (typeof jQuery == 'undefined') {
-                return;
-            }
-
-            const formatCurrency = (amount) => {
-                const formatter = new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                    minimumFractionDigits: 0
-                });
-                return formatter.format(amount).replace("₫", "VNĐ");
-            }
-
-            const latestProduct = (p) => {
-                const priceValue = parseFloat(p.price) || 0;
-                const discountValue = parseFloat(p.discount) || 0;
-
-                let finalPrice = priceValue * (1 - discountValue);
-                let price = '';
-                let finalPriceFormatted = formatCurrency(finalPrice);
-                let priceFormatted = formatCurrency(priceValue);
-
-                if (discountValue > 0) {
-                    price = `<ins>${finalPriceFormatted}</ins><del>${priceFormatted}</del>`;
-                } else {
-                    price = `<ins>${priceFormatted}</ins>`;
-                }
-
-                // Tách chuỗi image và lấy ảnh đầu tiên
-                let mainImage = "/img/no-image.jpg";
-                if (typeof p.image === "string" && p.image.trim() !== "") {
-                    const images = p.image.split(";").map(x => x.trim());
-                    mainImage = images.length > 0 ? `/img/${images[0]}` : mainImage;
-                }
-
-                return `
-                    <div class="single-product">
-                        <div class="product-f-image" style="height: 270px; overflow: hidden; display: block;">
-                            <img src="${mainImage}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                            <div class="product-hover">
-                                <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
-                                <a href="/product/detail/${p.id}" class="view-details-link"><i class="fa fa-link"></i> See details</a>
-                            </div>
-                        </div>
-                        <h2><a href="/product/detail/${p.id}">${p.productName}</a></h2>
-                        <div class="product-carousel-price">
-                            ${price}
-                        </div>
-                    </div>
-                `;
-            };
-
-            const widgetProduct = (p) => {
-                const priceValue = parseFloat(p.price) || 0;
-                const discountValue = parseFloat(p.discount) || 0;
-
-                let finalPrice = priceValue * (1 - discountValue);
-                let price = '';
-                let finalPriceFormatted = formatCurrency(finalPrice);
-                let priceFormatted = formatCurrency(priceValue);
-
-                if (discountValue > 0) {
-                    price = `<ins>${finalPriceFormatted}</ins><del>${priceFormatted}</del>`;
-                } else {
-                    price = `<ins>${priceFormatted}</ins>`;
-                }
-
-                // Tách chuỗi image và lấy ảnh đầu tiên
-                let mainImage = "/img/no-image.jpg";
-                if (typeof p.image === "string" && p.image.trim() !== "") {
-                    const images = p.image.split(";").map(x => x.trim());
-                    mainImage = images.length > 0 ? `/img/${images[0]}` : mainImage;
-                }
-
-                return `
-                    <div class="single-wid-product">
-                        <a href="/product/detail/${p.id}"><img src="${mainImage}" alt="" class="product-thumb"></a>
-                        <h2><a href="/product/detail/${p.id}">${p.productName}</a></h2>
-                        <div class="product-wid-rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                        </div>
-                        <div class="product-wid-price">
-                            ${price}
-                        </div>
-                    </div>
-                `;
-            };
-
-            $.ajax({
-                url: '@Url.Content("~/api/products")',
-                type: 'GET',
-                dataType: 'json',
-                success: function (products) {
-                    if (products && products.length > 0) {
-                        let latestProductsHtml = '';
-                        let topSellersHtml = '';
-                        let recentlyViewedHtml = '';
-                        let topNewHtml = '';
-
-                        products.forEach(p => {
-                            latestProductsHtml += latestProduct(p);
-                        });
-
-                        $('.product-carousel').html(latestProductsHtml);
-                        $('.product-carousel').trigger('destroy.owl.carousel');
-                        $('.product-carousel').owlCarousel({
-                            loop: true,
-                            nav: true,
-                            margin: 20,
-                            responsiveClass: true,
-                            responsive: {
-                                0: {
-                                    items: 1,
-                                    nav: true
-                                },
-                                600: {
-                                    items: 3,
-                                    nav: false
-                                },
-                                1000: {
-                                    items: 4,
-                                    nav: true,
-                                    loop: false
-                                }
-                            }
-                        });
-                        products.slice(0, 3).forEach(p => { topSellersHtml += widgetProduct(p); });
-                        $('.product-widget-area .col-md-4:nth-child(1) .single-product-widget').append(topSellersHtml);
-
-                        products.slice(0, 3).forEach(p => { recentlyViewedHtml += widgetProduct(p); });
-                        $('.product-widget-area .col-md-4:nth-child(2) .single-product-widget').append(recentlyViewedHtml);
-
-                        products.slice(0, 3).forEach(p => { topNewHtml += widgetProduct(p); });
-                        $('.product-widget-area .col-md-4:nth-child(3) .single-product-widget').append(topNewHtml);
-                    } else {
-                        $('.maincontent-area').html('<div class="container"><div class="row"><div class="col-md-12"><h2 class="section-title">Không tìm thấy sản phẩm nào.</h2></div></div></div>');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("LỖI KHI TẢI SẢN PHẨM:", status, error);
-                }
-            });
-        });
-    </script>
-}
 <div class="slider-area">
     <div class="zigzag-bottom"></div>
     <div id="slide-list" class="carousel carousel-fade slide" data-ride="carousel" data-interval="3000">
@@ -289,7 +137,10 @@
                 <div class="latest-product">
                     <h2 class="section-title">Latest Products</h2>
                     <div class="product-carousel">
-                        @* Chèn data latest products vào đây *@
+                        
+                            @*LatestProduct*@
+                            @await Component.InvokeAsync("LatestProducts")
+                        
                     </div>
                 </div>
             </div>
@@ -322,12 +173,33 @@
     <div class="zigzag-bottom"></div>
     <div class="container">
         <div class="row">
-            @*TopSellers*@
-            @await Component.InvokeAsync("TopSeller")
-            @*Recently Viewed*@
-            @await Component.InvokeAsync("RecentlyViewed")
-            @*TopNew*@
-            @await Component.InvokeAsync("TopNew")
+            <div class="col-md-4">
+                @*Top sellers*@
+                <div class="single-product-widget">
+
+                    <h2 class="product-wid-title">Top Sellers</h2>
+                    <a href="" class="wid-view-more">View All</a>
+                    @await Component.InvokeAsync("TopSeller")
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="single-product-widget">
+                    <h2 class="product-wid-title">Recently Viewed</h2>
+                    <a href="#" class="wid-view-more">View All</a>
+                    @*Recently Viewed*@
+                    @await Component.InvokeAsync("RecentlyViewed")
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="single-product-widget">
+                    @*Top New*@
+                    <h2 class="product-wid-title">Top New</h2>
+                    <a href="#" class="wid-view-more">View All</a>
+                    @await Component.InvokeAsync("TopNew")
+                    
+                </div>
+            </div>
         </div>
     </div>
 </div>
+

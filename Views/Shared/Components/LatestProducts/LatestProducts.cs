@@ -21,7 +21,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.LatestProducts
 
             try
             {
-                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
+                products = await _httpClient.GetFromJsonAsync<List<Product>>("api/products/type/latest") ?? new List<Product>();
             }
             catch (Exception ex)
             {
