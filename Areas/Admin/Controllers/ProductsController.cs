@@ -118,7 +118,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
                 {
                     Console.WriteLine("Inner: " + ex.InnerException.Message);
                 }
-                TempData["Error"] = "❌ Có lỗi khi thêm sản phẩm: " + ex.Message;
+                TempData["Error"] = "Có lỗi khi thêm sản phẩm: " + ex.Message;
                 return RedirectToAction("Create");
             }
         }

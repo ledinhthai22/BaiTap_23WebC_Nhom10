@@ -12,7 +12,7 @@ namespace BaiTap_23WebC_Nhom10.Views.Shared.Components.Home.Index.TopSeller
         public TopSeller(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7021/");
+            _httpClient.BaseAddress = new Uri("http://localhost:5021/");
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
