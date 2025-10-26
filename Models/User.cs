@@ -48,5 +48,6 @@ namespace BaiTap_23WebC_Nhom10.Models
 
         [Column("UPDATE_AT")]
         public DateTime? UpdateAt { get; set; }
+        public Role ? Role { get; set; }
     }
 }

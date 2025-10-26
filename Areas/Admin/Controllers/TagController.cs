@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using BaiTap_23WebC_Nhom10.Filters;
 
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[AuthorizeRole("Admin")]
+    [AuthorizeRole("Admin")]
     [Route("Admin/[controller]")]
     public class TagController : Controller
     {

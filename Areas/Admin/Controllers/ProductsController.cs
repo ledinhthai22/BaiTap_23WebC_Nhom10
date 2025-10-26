@@ -2,12 +2,13 @@
 using BaiTap_23WebC_Nhom10.Models;
 using BaiTap_23WebC_Nhom10.Utils;
 using Microsoft.AspNetCore.Mvc;
+using BaiTap_23WebC_Nhom10.Filters;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.Mime.MediaTypeNames;
 namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[AuthorizeRole("Admin")]//Bổ sung hạn chế chỉ có admin mới có thể gọi controller nì
+    [AuthorizeRole("Admin")]//Bổ sung hạn chế chỉ có admin mới có thể gọi controller nì
     [Route("Admin/[controller]")]
     public class ProductsController : Controller
     {
@@ -114,7 +115,7 @@ namespace BaiTap_23WebC_Nhom10.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                TempData["Success"] = "✅ Thêm sản phẩm thành công!";
+                TempData["Success"] = "Thêm sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)

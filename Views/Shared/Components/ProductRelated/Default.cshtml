@@ -6,11 +6,12 @@
     var culture = new CultureInfo("vi-VN");
 
     
-    var discountRate = (p.Discount ?? 0) / 100;
-    var discountedPrice = p.Price * (1 - discountRate);
+    var discountValue = p.Discount ?? 0;
+    var discountedPrice = p.Price * (1 - discountValue);
 
     var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
     var formattedOriginalPrice = string.Format(culture, "{0:N0}", p.Price) + " VNĐ";
+
 
   
     var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
@@ -34,14 +35,10 @@
         </h2>
 
         <div class="product-carousel-price text-center">
+            <ins>@formattedDiscountedPrice</ins>
             @if (p.Discount > 0)
             {
-                <ins>@formattedDiscountedPrice</ins>
                 <del>@formattedOriginalPrice</del>
-            }
-            else
-            {
-                <ins>@formattedOriginalPrice</ins>
             }
         </div>
     </div>

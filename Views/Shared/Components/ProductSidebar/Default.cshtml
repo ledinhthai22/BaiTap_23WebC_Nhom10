@@ -10,12 +10,16 @@
         {
             var culture = new CultureInfo("vi-VN");
 
+            // Giá gốc, đảm bảo không null
+            var originalPrice = p.Price;
 
-            var discountValue = p.Discount ?? 0;
-            var discountedPrice = p.Price * (1 - discountValue);
+            // Lấy giá trị giảm giá (theo phần trăm), nếu null thì mặc định 0
+            var discountRate = (p.Discount ?? 0m) / 100m;
+            var discountedPrice = originalPrice * (1 - discountRate);
 
+            // Format giá theo kiểu VNĐ
+            var formattedOriginalPrice = string.Format(culture, "{0:N0}", originalPrice) + " VNĐ";
             var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
-            var formattedOriginalPrice = string.Format(culture, "{0:N0}", p.Price) + " VNĐ";
 
           
             var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
@@ -36,14 +40,10 @@
                     </a>
                 </h2>
                 <div class="product-carousel-price">
+                    <ins>@formattedDiscountedPrice</ins>
                     @if (p.Discount > 0)
                     {
-                        <ins>@formattedDiscountedPrice</ins>
                         <del>@formattedOriginalPrice</del>
-                    }
-                    else
-                    {
-                        <ins>@formattedOriginalPrice</ins>
                     }
                 </div>
             </div>
