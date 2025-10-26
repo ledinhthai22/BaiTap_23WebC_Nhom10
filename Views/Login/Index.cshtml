@@ -1,5 +1,5 @@
 @section title {
-    Login
+        Login
 }
 
 <div class="container" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
@@ -10,16 +10,21 @@
                 <p class="text-muted">Please login to your account</p>
             </div>
 
-            <form method="post" action="/Account/Login">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <form method="post" asp-controller="Login" asp-action="Index" asp-route-reUrl="@ViewData["ReturnUrl"]">
                 <div class="form-group">
-                    <label for="userName">User Name</label>
-                    <input type="text" class="form-control" id="userName" name="UserName" placeholder="Enter user name"
-                        required /><!--sửa lại từ email sang user name-->
+                    <label>User Name</label>
+                    <input type="text" class="form-control" id="userName" name="UserName" placeholder="Enter user name" required />
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="Password"
-                        placeholder="Enter password" required />
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="passWord" name="PassWord" placeholder="Enter password" required />
                 </div>
 
                 <div class="checkbox" style="display: flex; justify-content: space-between; align-items: center;">
@@ -29,13 +34,16 @@
                     <a href="#" class="small text-muted">Forgot password?</a>
                 </div>
 
+                <!-- Add a hidden field for Name to satisfy the Required attribute -->
+                <input type="hidden" name="Name" value="LoginUser" />
+
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
 
             <div class="text-center" style="margin-top: 15px;">
                 <p class="text-muted small">
                     Don't have an account?
-                    <a href="#">Sign up</a>
+                    <a asp-controller="Register" asp-action="Index">Sign up</a>
                 </p>
             </div>
         </div>

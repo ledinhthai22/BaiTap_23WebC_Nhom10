@@ -5,24 +5,29 @@
 {
     var culture = new CultureInfo("vi-VN");
 
-    
-    var discountValue = p.Discount ?? 0;
-    var discountedPrice = p.Price * (1 - discountValue);
+    // Giá gốc, đảm bảo không null
+    var originalPrice = p.Price;
 
- 
-    var formattedDiscountedPrice = string.Format(culture.NumberFormat, "{0:N0}", discountedPrice) + " VNĐ";
-    var formattedOriginalPrice = string.Format(culture.NumberFormat, "{0:N0}", p.Price) + " VNĐ";
+    // Lấy giá trị giảm giá (theo phần trăm), nếu null thì mặc định 0
+    var discountRate = (p.Discount ?? 0m) / 100m;
+    var discountedPrice = originalPrice * (1 - discountRate);
 
+    // Format giá theo kiểu VNĐ
+    var formattedOriginalPrice = string.Format(culture, "{0:N0}", originalPrice) + " VNĐ";
+    var formattedDiscountedPrice = string.Format(culture, "{0:N0}", discountedPrice) + " VNĐ";
+
+    // Lấy ảnh chính, nếu không có thì dùng ảnh mặc định
     var imgMain = p.ProductImages?.FirstOrDefault(i => i.IsMain)?.ImagePath
-            ?? p.ProductImages?.FirstOrDefault()?.ImagePath
-            ?? "/img/no-image.png";
+                  ?? p.ProductImages?.FirstOrDefault()?.ImagePath
+                  ?? "/img/no-image.png";
 
     <div class="single-product">
         <div class="product-f-image" style="height: 270px; overflow: hidden; display: block;">
             <img src="@Url.Content(imgMain)"
                  alt="@p.ProductName"
                  style="width: 100%; height: 100%; object-fit: cover;"
-                 onerror="this.onerror=null; this.src='/img/no-image.png';" /> <div class="product-hover">
+                 onerror="this.onerror=null; this.src='/img/no-image.png';" />
+            <div class="product-hover">
                 <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
                 <a asp-controller="Product" asp-action="Detail" asp-route-slug="@p.Slug" class="view-details-link">
                     <i class="fa fa-link"></i> See details
@@ -35,10 +40,14 @@
         </h2>
 
         <div class="product-carousel-price">
-            <ins>@formattedDiscountedPrice</ins>
-            @if (p.Discount > 0)
+            @if (discountRate > 0)
             {
+                <ins>@formattedDiscountedPrice</ins>
                 <del>@formattedOriginalPrice</del>
+            }
+            else
+            {
+                <ins>@formattedOriginalPrice</ins>
             }
         </div>
     </div>

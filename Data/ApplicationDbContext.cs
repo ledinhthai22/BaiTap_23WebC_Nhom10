@@ -21,6 +21,9 @@ namespace BaiTap_23WebC_Nhom10.Data
         public DbSet<Tag> Tags { get; set; }
         
         public DbSet<Category> Categories { get; set; }
-        
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
+
     }
 }
